@@ -1,44 +1,18 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
+
 import CanvasLoader from "../Loader";
 
 const Earth = () => {
-  const earth = useGLTF("/planet/scene.gltf"); // ✅ Fix: absolute path (public folder)
+  const earth = useGLTF("./planet/scene.gltf");
 
   return (
-    <primitive
-      object={earth.scene}
-      scale={2.5}
-      position-y={0}
-      rotation-y={0}
-    />
+    <primitive object={earth.scene} scale={2.5} position-y={0} rotation-y={0} />
   );
 };
 
 const EarthCanvas = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mediaQuery.matches);
-    const handleResize = (e) => setIsMobile(e.matches);
-    mediaQuery.addEventListener("change", handleResize);
-    return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
-
-  if (isMobile) {
-    return (
-      <div className='w-full h-full flex justify-center items-center'>
-        <img
-          src='/planet/preview.png' // ✅ Optional fallback image
-          alt='Earth Preview'
-          className='w-full h-auto object-contain'
-        />
-      </div>
-    );
-  }
-
   return (
     <Canvas
       shadows
@@ -60,6 +34,7 @@ const EarthCanvas = () => {
           minPolarAngle={Math.PI / 2}
         />
         <Earth />
+
         <Preload all />
       </Suspense>
     </Canvas>
