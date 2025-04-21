@@ -23,6 +23,8 @@ const ProjectCard = ({
     <motion.div variants={fadeIn("up", "spring", index * 0.3, 0.75)}>
       <Tilt
         tiltEnable={!isMobile}
+        tiltMaxAngleX={isMobile ? 0 : 20}
+        tiltMaxAngleY={isMobile ? 0 : 20}
         className='bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full'
       >
         <div className='relative w-full h-[230px]'>
@@ -66,14 +68,15 @@ const ProjectCard = ({
         </div>
 
         <div className='mt-4 flex flex-wrap gap-2'>
-          {tags.map((tag) => (
-            <p
-              key={`${name}-${tag.name}`}
-              className={`text-[14px] ${tag.color}`}
-            >
-              #{tag.name}
-            </p>
-          ))}
+          {Array.isArray(tags) &&
+            tags.map((tag, idx) => (
+              <p
+                key={`${name}-${tag.name || idx}`}
+                className={`text-[14px] ${tag.color || ""}`}
+              >
+                #{tag.name || tag}
+              </p>
+            ))}
         </div>
       </Tilt>
     </motion.div>
@@ -89,8 +92,20 @@ const Works = () => {
     setIsMobile(mediaQuery.matches);
 
     const handleResize = (event) => setIsMobile(event.matches);
-    mediaQuery.addEventListener("change", handleResize);
-    return () => mediaQuery.removeEventListener("change", handleResize);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", handleResize);
+    } else {
+      mediaQuery.addListener(handleResize); // Fallback for older browsers
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener("change", handleResize);
+      } else {
+        mediaQuery.removeListener(handleResize);
+      }
+    };
   }, []);
 
   return (
