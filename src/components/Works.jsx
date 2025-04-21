@@ -8,7 +8,7 @@ import { SectionWrapper } from "../hoc";
 import { projects } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
 
-// Card component
+// Project Card Component
 const ProjectCard = ({
   index,
   name,
@@ -25,15 +25,15 @@ const ProjectCard = ({
         tiltEnable={!isMobile}
         tiltMaxAngleX={isMobile ? 0 : 20}
         tiltMaxAngleY={isMobile ? 0 : 20}
-        className='bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full'
+        className='bg-tertiary p-5 rounded-2xl w-full sm:w-[360px] min-h-[420px]'
       >
-        <div className='relative w-full h-[230px]'>
+        <div className='relative w-full h-[230px] sm:h-[230px] h-[200px]'>
           <img
             src={image}
             alt={name}
             onError={(e) => {
-              e.target.style.display = "none";
-              console.error(`Image failed to load: ${image}`);
+              e.target.src =
+                "https://via.placeholder.com/360x230?text=Image+Unavailable";
             }}
             className='w-full h-full object-cover rounded-2xl'
           />
@@ -83,7 +83,7 @@ const ProjectCard = ({
   );
 };
 
-// Main section
+// Main Section Component
 const Works = () => {
   const [isMobile, setIsMobile] = useState(false);
 
@@ -121,7 +121,7 @@ const Works = () => {
         </p>
       </div>
 
-      <div className='mt-20 w-full flex flex-wrap gap-7 justify-center overflow-visible'>
+      <div className='mt-20 w-full flex flex-wrap gap-7 justify-center items-stretch'>
         {projects.map((project, index) => (
           <ProjectCard
             key={`project-${index}`}
