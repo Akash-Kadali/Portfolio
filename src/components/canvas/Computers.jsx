@@ -4,13 +4,12 @@ import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
-// 👇 Your 3D model component
+// 3D Model component
 const Computers = ({ isMobile }) => {
-  const computer = useGLTF("/desktop_pc/scene.gltf"); // public path fix
+  const computer = useGLTF("/desktop_pc/scene.gltf");
 
   return (
     <mesh>
-      {/* Lighting setup */}
       <hemisphereLight intensity={0.95} groundColor='black' />
       <spotLight
         position={[-20, 50, 10]}
@@ -20,13 +19,11 @@ const Computers = ({ isMobile }) => {
         castShadow
         shadow-mapSize={1024}
       />
-      <pointLight intensity={2} />
-
-      {/* 3D Model */}
+      <pointLight intensity={1.5} />
       <primitive
         object={computer.scene}
-        scale={isMobile ? 0.3 : 0.4}
-        position={isMobile ? [0, -1.5, -1.5] : [1.5, -2.8, -1]}
+        scale={isMobile ? 0.25 : 0.35}
+        position={isMobile ? [0, -1.7, -1.6] : [2, -3.2, -1]}
         rotation={[0, 0.8, 0]}
       />
     </mesh>
@@ -37,11 +34,15 @@ const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Media query for responsiveness
     const mediaQuery = window.matchMedia("(max-width: 768px)");
     setIsMobile(mediaQuery.matches);
 
     const handleResize = (e) => setIsMobile(e.matches);
     mediaQuery.addEventListener("change", handleResize);
+
+    // Preload model on mount
+    useGLTF.preload("/desktop_pc/scene.gltf");
 
     return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
@@ -58,7 +59,7 @@ const ComputersCanvas = () => {
         <OrbitControls
           enableZoom={false}
           autoRotate
-          autoRotateSpeed={2.0}
+          autoRotateSpeed={2}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
         />
@@ -70,6 +71,3 @@ const ComputersCanvas = () => {
 };
 
 export default ComputersCanvas;
-
-// ⚡ Preload for smoother performance
-useGLTF.preload("/desktop_pc/scene.gltf");
