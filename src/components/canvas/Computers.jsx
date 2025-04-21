@@ -4,11 +4,13 @@ import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
+// 👇 Your 3D model component
 const Computers = ({ isMobile }) => {
-  const computer = useGLTF("./desktop_pc/scene.gltf");
+  const computer = useGLTF("/desktop_pc/scene.gltf"); // public path fix
 
   return (
     <mesh>
+      {/* Lighting setup */}
       <hemisphereLight intensity={0.95} groundColor='black' />
       <spotLight
         position={[-20, 50, 10]}
@@ -19,11 +21,13 @@ const Computers = ({ isMobile }) => {
         shadow-mapSize={1024}
       />
       <pointLight intensity={2} />
+
+      {/* 3D Model */}
       <primitive
         object={computer.scene}
-        scale={isMobile ? 0.2 : 0.25}
-        position={isMobile ? [-1, -1.5, -2] : [2, -3.4, -0.5]}
-        rotation={[-0.00, 0.8, -0.0]}
+        scale={isMobile ? 0.3 : 0.4}
+        position={isMobile ? [0, -1.5, -1.5] : [1.5, -2.8, -1]}
+        rotation={[0, 0.8, 0]}
       />
     </mesh>
   );
@@ -33,24 +37,13 @@ const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Add a listener for changes to the screen size
-    const mediaQuery = window.matchMedia("(max-width: 500px)");
-
-    // Set the initial value of the `isMobile` state variable
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
     setIsMobile(mediaQuery.matches);
 
-    // Define a callback function to handle changes to the media query
-    const handleMediaQueryChange = (event) => {
-      setIsMobile(event.matches);
-    };
+    const handleResize = (e) => setIsMobile(e.matches);
+    mediaQuery.addEventListener("change", handleResize);
 
-    // Add the callback function as a listener for changes to the media query
-    mediaQuery.addEventListener("change", handleMediaQueryChange);
-
-    // Remove the listener when the component is unmounted
-    return () => {
-      mediaQuery.removeEventListener("change", handleMediaQueryChange);
-    };
+    return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
 
   return (
@@ -64,15 +57,19 @@ const ComputersCanvas = () => {
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
           enableZoom={false}
+          autoRotate
+          autoRotateSpeed={2.0}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
         />
         <Computers isMobile={isMobile} />
       </Suspense>
-
       <Preload all />
     </Canvas>
   );
 };
 
 export default ComputersCanvas;
+
+// ⚡ Preload for smoother performance
+useGLTF.preload("/desktop_pc/scene.gltf");
