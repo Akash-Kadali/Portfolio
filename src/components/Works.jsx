@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Tilt from "react-parallax-tilt";
 import { motion } from "framer-motion";
 
@@ -8,6 +8,7 @@ import { SectionWrapper } from "../hoc";
 import { projects } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
 
+// Card component
 const ProjectCard = ({
   index,
   name,
@@ -15,43 +16,48 @@ const ProjectCard = ({
   tags,
   image,
   source_code_link,
-  website_link
+  website_link,
+  isMobile,
 }) => {
   return (
-    <motion.div variants={fadeIn("up", "spring", index * 0.5, 0.75)}>
+    <motion.div variants={fadeIn("up", "spring", index * 0.3, 0.75)}>
       <Tilt
-        options={{
-          max: 45,
-          scale: 1,
-          speed: 450,
-        }}
+        tiltEnable={!isMobile}
         className='bg-tertiary p-5 rounded-2xl sm:w-[360px] w-full'
       >
         <div className='relative w-full h-[230px]'>
           <img
             src={image}
-            
-            alt='project_image'
+            alt={name}
             className='w-full h-full object-cover rounded-2xl'
           />
 
-          <div className='absolute inset-0 flex justify-end m-3 card-img_hover'>
-            <div
-              onClick={() => window.open(source_code_link, "_blank")}
-              className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
-            >
-              <img
-                src={github}
-                alt='source code'
-                className='w-1/2 h-1/2 object-contain'
-              />
-            </div>
+          <div className='absolute inset-0 flex justify-end m-3 card-img_hover gap-1'>
+            {source_code_link && (
+              <div
+                onClick={() => window.open(source_code_link, "_blank")}
+                className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
+              >
+                <img
+                  src={github}
+                  alt='source code'
+                  className='w-1/2 h-1/2 object-contain'
+                />
+              </div>
+            )}
+            {website_link && (
+              <div
+                onClick={() => window.open(website_link, "_blank")}
+                className='blue-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
+              >
+                <span className='text-white text-sm font-bold'>↗</span>
+              </div>
+            )}
           </div>
         </div>
 
         <div className='mt-5'>
-          <h3 className='text-white font-bold text-[24px]'>{name}</h3>
-          <a target="_blank" className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600" href={website_link}>{name}</a>
+          <h3 className='text-white font-bold text-[20px]'>{name}</h3>
           <p className='mt-2 text-secondary text-[14px]'>{description}</p>
         </div>
 
@@ -70,30 +76,43 @@ const ProjectCard = ({
   );
 };
 
+// Main section
 const Works = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    setIsMobile(mediaQuery.matches);
+    const handleResize = (e) => setIsMobile(e.matches);
+    mediaQuery.addEventListener("change", handleResize);
+    return () => mediaQuery.removeEventListener("change", handleResize);
+  }, []);
+
   return (
     <>
       <motion.div variants={textVariant()}>
-        <p className={`${styles.sectionSubText} `}>My work</p>
-        <h2 className={`${styles.sectionHeadText}`}>Projects.</h2>
+        <p className={styles.sectionSubText}>My Portfolio</p>
+        <h2 className={styles.sectionHeadText}>Projects.</h2>
       </motion.div>
 
       <div className='w-full flex'>
-        <motion.p
-          variants={fadeIn("", "", 0.1, 1)}
-          className='mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]'
-        >
-        The following projects highlight my skills and experience in machine learning, computer vision, and AI system design. Each project includes a brief description along with links to the code and live demos. These examples reflect my ability to solve complex problems, build intelligent systems, and apply deep learning across real-world applications.
-        </motion.p>
+        <p className='mt-3 text-secondary text-[17px] max-w-3xl leading-[30px]'>
+          Here are a few of the machine learning, computer vision, and AI projects I've built or contributed to. Click on the GitHub icon to see code, or ↗ to open a live demo.
+        </p>
       </div>
 
-      <div className='mt-20 flex flex-wrap gap-7'>
+      <div className='mt-20 flex flex-wrap gap-7 justify-center'>
         {projects.map((project, index) => (
-          <ProjectCard key={`project-${index}`} index={index} {...project} />
+          <ProjectCard
+            key={`project-${index}`}
+            index={index}
+            isMobile={isMobile}
+            {...project}
+          />
         ))}
       </div>
     </>
   );
 };
 
-export default SectionWrapper(Works, "projects");
+export default SectionWrapper(Works, "");
