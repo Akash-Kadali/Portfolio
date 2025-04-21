@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   Decal,
@@ -10,8 +10,8 @@ import {
 
 import CanvasLoader from "../Loader";
 
-const Ball = ({ icon }) => {
-  const [decal] = useTexture([icon]);
+const Ball = (props) => {
+  const [decal] = useTexture([props.imgUrl]);
 
   return (
     <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
@@ -20,7 +20,7 @@ const Ball = ({ icon }) => {
       <mesh castShadow receiveShadow scale={2.75}>
         <icosahedronGeometry args={[1, 1]} />
         <meshStandardMaterial
-          color="#fff8eb"
+          color='#fff8eb'
           polygonOffset
           polygonOffsetFactor={-5}
           flatShading
@@ -38,39 +38,15 @@ const Ball = ({ icon }) => {
 };
 
 const BallCanvas = ({ icon }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mediaQuery.matches);
-
-    const handleResize = (e) => setIsMobile(e.matches);
-    mediaQuery.addEventListener("change", handleResize);
-    return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
-
-  // ✅ Fallback for mobile devices (static image instead of canvas)
-  if (isMobile) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-white rounded-full shadow-md">
-        <img
-          src={icon}
-          alt="tech"
-          className="w-full h-full object-contain rounded-full"
-        />
-      </div>
-    );
-  }
-
   return (
     <Canvas
-      frameloop="demand"
+      frameloop='demand'
       dpr={[1, 2]}
       gl={{ preserveDrawingBuffer: true }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls enableZoom={false} />
-        <Ball icon={icon} />
+        <Ball imgUrl={icon} />
       </Suspense>
 
       <Preload all />
