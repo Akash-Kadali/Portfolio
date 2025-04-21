@@ -29,6 +29,10 @@ const ProjectCard = ({
           <img
             src={image}
             alt={name}
+            onError={(e) => {
+              e.target.style.display = "none";
+              console.error(`Image failed to load: ${image}`);
+            }}
             className='w-full h-full object-cover rounded-2xl'
           />
 
@@ -83,7 +87,8 @@ const Works = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 768px)");
     setIsMobile(mediaQuery.matches);
-    const handleResize = (e) => setIsMobile(e.matches);
+
+    const handleResize = (event) => setIsMobile(event.matches);
     mediaQuery.addEventListener("change", handleResize);
     return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
@@ -101,7 +106,7 @@ const Works = () => {
         </p>
       </div>
 
-      <div className='mt-20 flex flex-wrap gap-7 justify-center'>
+      <div className='mt-20 w-full flex flex-wrap gap-7 justify-center overflow-visible'>
         {projects.map((project, index) => (
           <ProjectCard
             key={`project-${index}`}
