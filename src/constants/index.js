@@ -202,7 +202,7 @@ const educations = [
     school_name: "IIIT Vadodara",
     icon: iiitvicd,
     iconBg: "#1c274c",
-    date: "Jul 2019 – May 2023",
+    date: "Dec 2020 – June 2024",
     points: [
       "Graduated with 8.78/10 GPA, with strong performance in ML, CV, DSA, OS, and DBMS.",
       "Held leadership roles: 3-year Student Representative, Secretary – Technical Committee, Core Member – Coding Club.",
