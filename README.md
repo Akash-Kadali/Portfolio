@@ -1,57 +1,58 @@
-# 🌌 Interactive ML Portfolio Website – Sri Akash Kadali
+# 🌌 Sri Akash Kadali – Interactive Machine Learning Portfolio
 
-Welcome to my personal portfolio — a visual, interactive experience built to represent my journey as an **aspiring Machine Learning Engineer**.
+Welcome to **[srikadali.com](https://srikadali.com)** — a dynamic and immersive portfolio designed to reflect my journey as an **aspiring Machine Learning Engineer** with a passion for creativity and impactful technology.
 
-Although I’m not a front-end developer by profession, I built this portfolio using modern web technologies like **React.js** and **Three.js** to creatively showcase my skills, projects, and experiences in **Machine Learning, AI, and Computer Vision**.
-
----
-
-## 🎯 Purpose
-
-As a Machine Learning Engineer in training, I wanted a portfolio that:
-- Represents my personality and technical background visually
-- Demonstrates initiative and creativity outside the ML domain
-- Serves as a gateway for recruiters, collaborators, and peers
-
-This website is a reflection of my passion for blending creativity with technical skills.
+While I don’t come from a front-end development background, I independently built this website to bridge the gap between technical depth and creative expression, using modern technologies like **React.js**, **Three.js**, and **Framer Motion**.
 
 ---
 
-## 🔧 Technologies Used
+## 🎯 Mission
 
-| Technology            | Purpose                                                                 |
-|------------------------|-------------------------------------------------------------------------|
-| **React.js**            | For dynamic component-based UI                                          |
-| **Three.js**            | To render 3D interactive elements                                        |
-| **React Three Fiber**   | A React renderer for Three.js for building declarative 3D scenes        |
-| **TailwindCSS**         | Utility-first CSS for styling                                           |
-| **Framer Motion**       | Animation library to bring life to the UI                              |
+This portfolio is more than just a website — it’s a showcase of initiative and creativity outside the conventional ML space. My goals were to:
+
+- Visually narrate my journey and technical growth in ML and AI  
+- Design an experience that resonates with recruiters and collaborators  
+- Demonstrate my commitment to real-world application and creativity  
 
 ---
 
-## 🧠 What I Gained (As an ML Engineer)
+## 🛠️ Tech Stack
 
-Even though this is a web-based project, I strengthened skills that are **also vital for ML/AI engineers**:
-- Structured, component-based code organization
-- Working with GPU-accelerated 3D rendering (related to visualization)
-- Responsive UI/UX thinking, useful for **AI productization**
-- Deployment mindset for real-world ML applications
-
----
-
-## 🚀 Features
-
-- Immersive 3D interface to reflect tech-driven aesthetics
-- Fully responsive and optimized for all devices
-- Highlighted ML projects and research experience
-- Reusable architecture with clean, scalable code
+| Technology              | Purpose                                                                 |
+|-------------------------|-------------------------------------------------------------------------|
+| **React.js**            | Component-based frontend architecture                                   |
+| **Three.js**            | Interactive 3D rendering for immersive UI                              |
+| **React Three Fiber**   | Declarative 3D scene management using React                             |
+| **Tailwind CSS**        | Utility-first CSS framework for responsive design                      |
+| **Framer Motion**       | Smooth UI animations and transitions                                    |
 
 ---
 
-## ⚙️ Run Locally
+## 🧠 ML Engineer Takeaways
+
+Although this is a web-based project, it enriched my skills in ways that translate directly to ML/AI roles:
+
+- **Modular code structuring** — crucial for scalable ML pipelines  
+- **GPU-accelerated visualization** — bridges to model output visualization  
+- **UI/UX mindset** — essential for productizing ML systems  
+- **Deployment readiness** — mirrors the lifecycle of production ML models  
+
+---
+
+## 🚀 Key Highlights
+
+- Futuristic 3D design inspired by tech aesthetics  
+- Mobile-first, responsive experience across devices  
+- Project sections showcasing NLP, CV, and DL-based work  
+- Modular and scalable codebase with clean architecture  
+
+---
+
+## ⚙️ Running Locally
 
 ```bash
 git clone https://github.com/Akash-Kadali/Portfolio.git
 cd Portfolio
 npm install
 npm run dev
+```
