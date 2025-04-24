@@ -329,17 +329,17 @@ const projects = [
     website_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
     source_code_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
   },
-  {
-    name: "Document AI",
-    description: "Document classification and OCR preprocessing using OpenCV.",
-    tags: [
-      { name: "OCR", color: "blue-text-gradient" },
-      { name: "Document AI", color: "green-text-gradient" },
-    ],
-    image: document,
-    website_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
-    source_code_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
-  },
+  // {
+  //   name: "Document AI",
+  //   description: "Document classification and OCR preprocessing using OpenCV.",
+  //   tags: [
+  //     { name: "OCR", color: "blue-text-gradient" },
+  //     { name: "Document AI", color: "green-text-gradient" },
+  //   ],
+  //   image: document,
+  //   website_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
+  //   source_code_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
+  // },
 ];
 
 
