@@ -272,74 +272,74 @@ const projects = [
     website_link: "https://github.com/Akash-Kadali/Cloud-Based-NLP-Model-for-Automated-Document-Summarization",
     source_code_link: "https://github.com/Akash-Kadali/Cloud-Based-NLP-Model-for-Automated-Document-Summarization",
   },
-  {
-    name: "Conversational AI",
-    description: "Speech + Vision chatbot using Whisper, LLaMA 3, and medical image analysis.",
-    tags: [
-      { name: "Voice AI", color: "blue-text-gradient" },
-      { name: "LLaMA", color: "green-text-gradient" },
-      { name: "Vision", color: "pink-text-gradient" },
-    ],
-    image: conversationalai,
-    website_link: "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
-    source_code_link: "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
-  },
-  {
-    name: "Graph-Based User Modeling",
-    description: "User-level feature extraction with contextual embeddings using GraphSAGE.",
-    tags: [
-      { name: "Graphs", color: "blue-text-gradient" },
-      { name: "Embeddings", color: "green-text-gradient" },
-    ],
-    image: graphsage,
-    website_link: "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
-    source_code_link: "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
-  },
-  {
-    name: "Hate Speech Detection",
-    description: "Emotion-aware contrastive learning model for detecting implicit hate speech.",
-    tags: [
-      { name: "Contrastive Learning", color: "blue-text-gradient" },
-      { name: "NLP", color: "green-text-gradient" },
-    ],
-    image: hatespeech,
-    website_link: "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
-    source_code_link: "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
-  },
-  {
-    name: "Image Segmentation",
-    description: "Applied semantic segmentation on chip images for defect analysis.",
-    tags: [
-      { name: "U-Net", color: "blue-text-gradient" },
-      { name: "Computer Vision", color: "green-text-gradient" },
-    ],
-    image: imagesegmentation,
-    website_link: "https://github.com/Akash-Kadali/Image-Segmentation",
-    source_code_link: "https://github.com/Akash-Kadali/Image-Segmentation",
-  },
-  {
-    name: "Image Captioning",
-    description: "Caption generation model trained on the Flickr dataset.",
-    tags: [
-      { name: "Vision", color: "blue-text-gradient" },
-      { name: "Text", color: "green-text-gradient" },
-      { name: "Deep Learning", color: "pink-text-gradient" },
-    ],
-    image: imgcap,
-    website_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
-    source_code_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
-  },
-  {
-    name: "Document AI",
-    description: "Document classification and OCR preprocessing using OpenCV.",
-    tags: [
-      { name: "OCR", color: "blue-text-gradient" },
-      { name: "Document AI", color: "green-text-gradient" },
-    ],
-    image: document,
-    website_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
-    source_code_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
-  },
+  // {
+  //   name: "Conversational AI",
+  //   description: "Speech + Vision chatbot using Whisper, LLaMA 3, and medical image analysis.",
+  //   tags: [
+  //     { name: "Voice AI", color: "blue-text-gradient" },
+  //     { name: "LLaMA", color: "green-text-gradient" },
+  //     { name: "Vision", color: "pink-text-gradient" },
+  //   ],
+  //   image: conversationalai,
+  //   website_link: "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
+  //   source_code_link: "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
+  // },
+  // {
+  //   name: "Graph-Based User Modeling",
+  //   description: "User-level feature extraction with contextual embeddings using GraphSAGE.",
+  //   tags: [
+  //     { name: "Graphs", color: "blue-text-gradient" },
+  //     { name: "Embeddings", color: "green-text-gradient" },
+  //   ],
+  //   image: graphsage,
+  //   website_link: "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
+  //   source_code_link: "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
+  // },
+  // {
+  //   name: "Hate Speech Detection",
+  //   description: "Emotion-aware contrastive learning model for detecting implicit hate speech.",
+  //   tags: [
+  //     { name: "Contrastive Learning", color: "blue-text-gradient" },
+  //     { name: "NLP", color: "green-text-gradient" },
+  //   ],
+  //   image: hatespeech,
+  //   website_link: "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
+  //   source_code_link: "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
+  // },
+  // {
+  //   name: "Image Segmentation",
+  //   description: "Applied semantic segmentation on chip images for defect analysis.",
+  //   tags: [
+  //     { name: "U-Net", color: "blue-text-gradient" },
+  //     { name: "Computer Vision", color: "green-text-gradient" },
+  //   ],
+  //   image: imagesegmentation,
+  //   website_link: "https://github.com/Akash-Kadali/Image-Segmentation",
+  //   source_code_link: "https://github.com/Akash-Kadali/Image-Segmentation",
+  // },
+  // {
+  //   name: "Image Captioning",
+  //   description: "Caption generation model trained on the Flickr dataset.",
+  //   tags: [
+  //     { name: "Vision", color: "blue-text-gradient" },
+  //     { name: "Text", color: "green-text-gradient" },
+  //     { name: "Deep Learning", color: "pink-text-gradient" },
+  //   ],
+  //   image: imgcap,
+  //   website_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
+  //   source_code_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
+  // },
+  // {
+  //   name: "Document AI",
+  //   description: "Document classification and OCR preprocessing using OpenCV.",
+  //   tags: [
+  //     { name: "OCR", color: "blue-text-gradient" },
+  //     { name: "Document AI", color: "green-text-gradient" },
+  //   ],
+  //   image: document,
+  //   website_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
+  //   source_code_link: "https://github.com/Akash-Kadali/Document-Image-Understanding",
+  // },
 ];
 
 
