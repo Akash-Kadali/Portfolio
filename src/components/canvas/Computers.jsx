@@ -1,20 +1,11 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
-import * as THREE from "three";
 
 import CanvasLoader from "../Loader";
 
 const Computers = ({ isMobile }) => {
   const computer = useGLTF("./desktop_pc/scene.gltf");
-
-  // Auto-center the model to make it visible on all screens
-  useEffect(() => {
-    const box = new THREE.Box3().setFromObject(computer.scene);
-    const center = new THREE.Vector3();
-    box.getCenter(center);
-    computer.scene.position.sub(center); // shifts model to origin
-  }, [computer]);
 
   return (
     <mesh>
@@ -30,9 +21,9 @@ const Computers = ({ isMobile }) => {
       <pointLight intensity={2} />
       <primitive
         object={computer.scene}
-        scale={isMobile ? 0.15 : 0.2}
-        position={isMobile ? [0, -1.2, 0] : [0, -1.5, 0]}
-        rotation={[0, 0.75, 0]}
+        scale={isMobile ? 0.2 : 0.25}
+        position={isMobile ? [-1, -1.5, -2] : [2, -3.4, -0.5]}
+        rotation={[-0.00, 0.8, -0.0]}
       />
     </mesh>
   );
@@ -42,15 +33,21 @@ const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Add a listener for changes to the screen size
     const mediaQuery = window.matchMedia("(max-width: 500px)");
+
+    // Set the initial value of the `isMobile` state variable
     setIsMobile(mediaQuery.matches);
 
+    // Define a callback function to handle changes to the media query
     const handleMediaQueryChange = (event) => {
       setIsMobile(event.matches);
     };
 
+    // Add the callback function as a listener for changes to the media query
     mediaQuery.addEventListener("change", handleMediaQueryChange);
 
+    // Remove the listener when the component is unmounted
     return () => {
       mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
@@ -61,7 +58,7 @@ const ComputersCanvas = () => {
       frameloop='demand'
       shadows
       dpr={[1, 2]}
-      camera={{ position: [5, 2, 8], fov: 40 }}
+      camera={{ position: [20, 3, 5], fov: 25 }}
       gl={{ preserveDrawingBuffer: true }}
     >
       <Suspense fallback={<CanvasLoader />}>
@@ -72,6 +69,7 @@ const ComputersCanvas = () => {
         />
         <Computers isMobile={isMobile} />
       </Suspense>
+
       <Preload all />
     </Canvas>
   );
