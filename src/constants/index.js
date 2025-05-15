@@ -137,14 +137,14 @@ const technologies = [
 ];
 
 const experiences = [
-  {
-    title: "Incoming Machine Learning Intern",
-    company_name: "Ayar Labs",
-    icon: azure, // Replace with actual import like ayarlabs
-    iconBg: "#003049",
-    date: "May 2025 – Aug 2025",
-    points: [],
-  },
+  // {
+  //   title: "Incoming Machine Learning Intern",
+  //   company_name: "Ayar Labs",
+  //   icon: azure, // Replace with actual import like ayarlabs
+  //   iconBg: "#003049",
+  //   date: "May 2025 – Aug 2025",
+  //   points: [],
+  // },
   {
     title: "Machine Learning Intern",
     company_name: "IIT Indore",
