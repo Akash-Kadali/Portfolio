@@ -151,11 +151,7 @@ const experiences = [
     icon: docker,
     iconBg: "#1c274c",
     date: "Jul 2024 – Dec 2024",
-    points: [
-      "Automated defect classification in photonic chips with AI models.",
-      "Engineered optical I/O pipelines using statistical modeling tools.",
-      "Worked on silicon photonics systems with industry collaborators.",
-    ],
+    points: [],
   },
   {
     title: "Machine Learning Intern",
@@ -163,11 +159,7 @@ const experiences = [
     icon: mongodb,
     iconBg: "#2d3a65",
     date: "Jan 2024 – Jun 2024",
-    points: [
-      "Built AI-based chip inspection system using deep segmentation models.",
-      "Improved automation with ViTs + U-Net architecture for photonics data.",
-      "Accelerated real-time inspection via GPU and model quantization.",
-    ],
+    points: [],
   },
   {
     title: "Machine Learning Intern",
@@ -175,14 +167,10 @@ const experiences = [
     icon: docker,
     iconBg: "#1c274c",
     date: "May 2023 – Dec 2023",
-    points: [
-      "Developed AI-based visual inspection system for chip defect detection.",
-      "Enhanced image classification using CNNs and transfer learning.",
-      "Used TensorFlow, PyTorch, and OpenCV for optical I/O analysis.",
-      "Integrated statistical analysis via SciPy to improve pipeline efficiency.",
-    ],
+    points: [],
   },
 ];
+
 const educations = [
   {
     degree: "MS in Applied Machine Learning",
