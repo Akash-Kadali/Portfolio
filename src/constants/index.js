@@ -37,7 +37,7 @@ import {
   document,
   imagesegmentation,
   imgcap,
-  nlp
+  nlp,
 } from "../assets";
 export const navLinks = [
   {
@@ -142,7 +142,23 @@ const technologies = [
 
 const experiences = [
   {
-    title: "Machine Learning Intern",
+    title: "Machine Learning Engineer",
+    company_name: "Parspec",
+    icon: shopify,
+    iconBg: "#0a1b2d",
+    date: "Jun 2026 – Present",
+    points: [],
+  },
+  {
+    title: "Computer Vision Engineer",
+    company_name: "SnugFit Solutions",
+    icon: meta,
+    iconBg: "#111827",
+    date: "Jun 2026",
+    points: [],
+  },
+  {
+    title: "Machine Learning Engineer Intern",
     company_name: "Ayar Labs",
     icon: azure, // Replace with actual import like ayarlabs
     iconBg: "#003049",
@@ -154,23 +170,15 @@ const experiences = [
     company_name: "IIT Indore",
     icon: docker,
     iconBg: "#1c274c",
-    date: "Jul 2024 – Dec 2024",
+    date: "Jun 2024 – Aug 2024",
     points: [],
   },
   {
     title: "Machine Learning Intern",
-    company_name: "NIT Jaipur",
+    company_name: "MNIT Jaipur",
     icon: mongodb,
     iconBg: "#2d3a65",
     date: "Jan 2024 – Jun 2024",
-    points: [],
-  },
-  {
-    title: "Machine Learning Intern",
-    company_name: "IIT Indore",
-    icon: docker,
-    iconBg: "#1c274c",
-    date: "May 2023 – Dec 2023",
     points: [],
   },
 ];
@@ -184,9 +192,9 @@ const educations = [
     date: "Aug 2024 – May 2026",
     points: [
       "Focused on optimization, computer vision, NLP, and scalable ML systems.",
-      "Working on LLM-based applications and applied deep learning projects.",
-      "Developing AI-powered visual inspection systems for semiconductor analysis."
-    ]
+      "Graduated in 2026 with a focus on applied AI and production ML systems.",
+      "Built LLM applications, deep learning systems, and AI-powered visual inspection workflows.",
+    ],
   },
   {
     degree: "B.Tech in Computer Science and Engineering",
@@ -197,8 +205,8 @@ const educations = [
     points: [
       "Graduated with 8.78/10 GPA, with strong performance in ML, CV, DSA, OS, and DBMS.",
       "Held leadership roles: 3-year Student Representative, Secretary – Technical Committee, Core Member – Coding Club.",
-      "Achieved top grades: DSA (AA), Prob & Stats (AA), OOP (AA), DBMS (AB), OS (AB), ML (AB), Image Processing (AA), Deep Learning (AB), AI (BB)."
-    ]
+      "Achieved top grades: DSA (AA), Prob & Stats (AA), OOP (AA), DBMS (AB), OS (AB), ML (AB), Image Processing (AA), Deep Learning (AB), AI (BB).",
+    ],
   },
 ];
 
@@ -238,8 +246,10 @@ const projects = [
       { name: "Medical Imaging", color: "green-text-gradient" },
     ],
     image: cadnet,
-    website_link: "https://github.com/Akash-Kadali/CaDT-Net-A-Cascaded-Deformable-Transformer-Network",
-    source_code_link: "https://github.com/Akash-Kadali/CaDT-Net-A-Cascaded-Deformable-Transformer-Network",
+    website_link:
+      "https://github.com/Akash-Kadali/CaDT-Net-A-Cascaded-Deformable-Transformer-Network",
+    source_code_link:
+      "https://github.com/Akash-Kadali/CaDT-Net-A-Cascaded-Deformable-Transformer-Network",
   },
   // {
   //   name: "DiagnoSys",
@@ -266,41 +276,51 @@ const projects = [
   // },
   {
     name: "Conversational AI",
-    description: "Speech + Vision chatbot using Whisper, LLaMA 3, and medical image analysis.",
+    description:
+      "Speech + Vision chatbot using Whisper, LLaMA 3, and medical image analysis.",
     tags: [
       { name: "Voice AI", color: "blue-text-gradient" },
       { name: "LLaMA", color: "green-text-gradient" },
       { name: "Vision", color: "pink-text-gradient" },
     ],
     image: conversationalai,
-    website_link: "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
-    source_code_link: "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
+    website_link:
+      "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
+    source_code_link:
+      "https://github.com/Akash-Kadali/Conversational-AI-with-Voice-and-Visual-Capabilities",
   },
   {
     name: "Graph-Based User Modeling",
-    description: "User-level feature extraction with contextual embeddings using GraphSAGE.",
+    description:
+      "User-level feature extraction with contextual embeddings using GraphSAGE.",
     tags: [
       { name: "Graphs", color: "blue-text-gradient" },
       { name: "Embeddings", color: "green-text-gradient" },
     ],
     image: graphsage,
-    website_link: "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
-    source_code_link: "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
+    website_link:
+      "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
+    source_code_link:
+      "https://github.com/Akash-Kadali/A-Graph-Based-Framework-for-User-Level-Feature-Modeling-with-Contextual-Embeddings",
   },
   {
     name: "Hate Speech Detection",
-    description: "Emotion-aware contrastive learning model for detecting implicit hate speech.",
+    description:
+      "Emotion-aware contrastive learning model for detecting implicit hate speech.",
     tags: [
       { name: "Contrastive Learning", color: "blue-text-gradient" },
       { name: "NLP", color: "green-text-gradient" },
     ],
     image: hatespeech,
-    website_link: "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
-    source_code_link: "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
+    website_link:
+      "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
+    source_code_link:
+      "https://github.com/Akash-Kadali/Supervised-Contrastive-Learning-with-Attention-Emotion-Synthesis-for-Implicit-Hate-Speech-Detection",
   },
   {
     name: "Image Segmentation",
-    description: "Applied semantic segmentation on chip images for defect analysis.",
+    description:
+      "Applied semantic segmentation on chip images for defect analysis.",
     tags: [
       { name: "U-Net", color: "blue-text-gradient" },
       { name: "Computer Vision", color: "green-text-gradient" },
@@ -318,8 +338,10 @@ const projects = [
       { name: "Deep Learning", color: "pink-text-gradient" },
     ],
     image: imgcap,
-    website_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
-    source_code_link: "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
+    website_link:
+      "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
+    source_code_link:
+      "https://github.com/Akash-Kadali/Employing-advanced-computer-vision-an-image-caption-generator-utilizes-the-expansive-Flickr-Dataset",
   },
   // {
   //   name: "Document AI",
@@ -334,5 +356,11 @@ const projects = [
   // },
 ];
 
-
-export { services, technologies, experiences, testimonials, projects, educations };
+export {
+  services,
+  technologies,
+  experiences,
+  testimonials,
+  projects,
+  educations,
+};

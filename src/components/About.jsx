@@ -47,7 +47,7 @@ const About = () => {
         variants={fadeIn("", "", 0.1, 1)}
         className='about-copy mt-7 text-secondary text-[18px] max-w-4xl leading-[32px]'
       >
-        I’m a Machine Learning Engineer pursuing an MS in Applied Machine Learning at the University of Maryland. I work where rigorous research meets production: computer vision, deep learning, transformers, scalable pipelines, and GPU-aware optimization. Across roles at Ayar Labs, IIT Indore, and NIT Jaipur, I’ve focused on turning ambiguous visual problems into systems people can actually use.
+        I’m a Machine Learning Engineer at Parspec and a 2026 graduate of the University of Maryland’s MS in Applied Machine Learning program. I work across backend engineering, computer vision, NLP, generative AI, LLM integration, data pipelines, model development, and scalable inference. Across Parspec, SnugFit Solutions, Ayar Labs, IIT Indore, and MNIT Jaipur, I’ve focused on turning ambiguous problems into production systems people can actually use.
       </motion.p>
 
       <div className='mt-16 grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5'>

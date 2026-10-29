@@ -113,7 +113,7 @@ const Workbench = () => {
     <>
       <div className="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
         <div>
-          <p className={styles.sectionSubText}>04 / ML product lab</p>
+          <p className={styles.sectionSubText}>05 / ML product lab</p>
           <h2 className={styles.sectionHeadText}>A working surface,<br />not a static mockup.</h2>
         </div>
         <p className="max-w-md text-[15px] leading-7 text-secondary">
