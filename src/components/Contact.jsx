@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import emailjs from "@emailjs/browser";
 
 import { styles } from "../styles";
@@ -8,10 +8,6 @@ import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 
 const Contact = () => {
-  console.log("Service ID:", import.meta.env.VITE_APP_EMAILJS_SERVICE_ID);
-  console.log("Template ID:", import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID);
-  console.log("Public Key:", import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY);
-  
   const formRef = useRef();
   const [form, setForm] = useState({
     name: "",
@@ -75,10 +71,10 @@ const Contact = () => {
     <div className="xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-hidden">
       <motion.div
         variants={slideIn("left", "tween", 0.2, 1)}
-        className="flex-[0.75] bg-black-100 p-8 rounded-2xl"
+        className="contact-card flex-[0.8] p-8 md:p-10 rounded-[28px]"
       >
-        <p className={styles.sectionSubText}>Get in touch</p>
-        <h3 className={styles.sectionHeadText}>Contact.</h3>
+        <p className={styles.sectionSubText}>06 / Get in touch</p>
+        <h3 className={styles.sectionHeadText}>Let’s build something useful.</h3>
 
         <form
           ref={formRef}
@@ -93,7 +89,7 @@ const Contact = () => {
               value={form.name}
               onChange={handleChange}
               placeholder="What's your good name?"
-              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              className="form-field py-4 px-5 placeholder:text-secondary text-white rounded-xl outline-none font-medium"
             />
           </label>
 
@@ -105,7 +101,7 @@ const Contact = () => {
               value={form.email}
               onChange={handleChange}
               placeholder="What's your email address?"
-              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              className="form-field py-4 px-5 placeholder:text-secondary text-white rounded-xl outline-none font-medium"
             />
           </label>
 
@@ -117,7 +113,7 @@ const Contact = () => {
               value={form.message}
               onChange={handleChange}
               placeholder="What would you like to say?"
-              className="bg-tertiary py-4 px-6 placeholder:text-secondary text-white rounded-lg outline-none border-none font-medium"
+              className="form-field py-4 px-5 placeholder:text-secondary text-white rounded-xl outline-none font-medium"
             />
           </label>
 
@@ -125,8 +121,8 @@ const Contact = () => {
             type="submit"
             disabled={loading}
             className={`${
-              loading ? "bg-gray-500 cursor-not-allowed" : "bg-tertiary"
-            } py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md shadow-primary`}
+              loading ? "bg-gray-500 cursor-not-allowed" : "button-primary"
+            } py-3 px-8 rounded-xl outline-none w-fit text-white font-semibold`}
           >
             {loading ? "Sending..." : "Send"}
           </button>

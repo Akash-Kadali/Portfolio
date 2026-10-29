@@ -3,7 +3,7 @@ import {
   VerticalTimeline,
   VerticalTimelineElement,
 } from "react-vertical-timeline-component";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import "react-vertical-timeline-component/style.min.css";
 
@@ -16,10 +16,13 @@ const ExperienceCard = ({ experience }) => {
   return (
     <VerticalTimelineElement
       contentStyle={{
-        background: "#1d1836",
+        background: "rgba(13, 25, 38, 0.86)",
         color: "#fff",
+        border: "1px solid rgba(255,255,255,0.09)",
+        boxShadow: "0 24px 70px rgba(0,0,0,0.22)",
+        borderRadius: "20px",
       }}
-      contentArrowStyle={{ borderRight: "7px solid  #232631" }}
+      contentArrowStyle={{ borderRight: "7px solid rgba(255,255,255,0.1)" }}
       date={experience.date}
       iconStyle={{ background: experience.iconBg }}
       icon={
@@ -61,10 +64,10 @@ const Experience = () => {
     <>
       <motion.div variants={textVariant()}>
         <p className={`${styles.sectionSubText} text-center`}>
-          What I have done so far
+          03 / Experience
         </p>
         <h2 className={`${styles.sectionHeadText} text-center`}>
-          Work Experience.
+          From research to real-world systems
         </h2>
       </motion.div>
 

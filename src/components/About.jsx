@@ -1,6 +1,6 @@
 import React from "react";
 import Tilt from "react-parallax-tilt";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import { styles } from "../styles";
 import { services } from "../constants";
@@ -8,10 +8,10 @@ import { SectionWrapper } from "../hoc";
 import { fadeIn, textVariant } from "../utils/motion";
 
 const ServiceCard = ({ index, title, icon }) => (
-  <Tilt className='xs:w-[250px] w-full'>
+  <Tilt className='service-item xs:w-[250px] w-full'>
     <motion.div
       variants={fadeIn("right", "spring", index * 0.5, 0.75)}
-      className='w-full green-pink-gradient p-[1px] rounded-[20px] shadow-card'
+      className='w-full rounded-[20px]'
     >
       <div
         options={{
@@ -19,15 +19,15 @@ const ServiceCard = ({ index, title, icon }) => (
           scale: 1,
           speed: 450,
         }}
-        className='bg-tertiary rounded-[20px] py-5 px-12 min-h-[280px] flex justify-evenly items-center flex-col'
+        className='service-card rounded-[20px] py-8 px-8 min-h-[240px] flex justify-between items-start flex-col'
       >
         <img
           src={icon}
           alt='web-development'
-          className='w-16 h-16 object-contain'
+          className='w-14 h-14 object-contain service-icon'
         />
 
-        <h3 className='text-white text-[20px] font-bold text-center'>
+        <h3 className='text-white text-[20px] font-semibold text-left'>
           {title}
         </h3>
       </div>
@@ -39,19 +39,18 @@ const About = () => {
   return (
     <>
       <motion.div variants={textVariant()}>
-        <p className={styles.sectionSubText}>Introduction</p>
-        <h2 className={styles.sectionHeadText}>Overview.</h2>
+        <p className={styles.sectionSubText}>01 / About</p>
+        <h2 className={styles.sectionHeadText}>Research depth.<br/>Product instinct.</h2>
       </motion.div>
 
       <motion.p
         variants={fadeIn("", "", 0.1, 1)}
-        className='mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]'
+        className='about-copy mt-7 text-secondary text-[18px] max-w-4xl leading-[32px]'
       >
-        I'm Sri Akash Kadali, a passionate Machine Learning Engineer currently pursuing my Master’s in Applied Machine Learning at the University of Maryland, College Park. I specialize in building AI-powered visual systems, deep learning models, and scalable ML pipelines. My hands-on experience spans across internships at IIT Indore, NIT Jaipur, and currently, Ayar Labs, where I’m working on semiconductor defect inspection using advanced computer vision techniques. 
-        My core strengths lie in Python, PyTorch, TensorFlow, computer vision, transformers, and CUDA-based optimization. I'm deeply interested in pushing the boundaries of ML systems in real-world applications.I’m actively looking for opportunities to contribute to impactful AI-driven products. Let’s connect and build something incredible!
+        I’m a Machine Learning Engineer pursuing an MS in Applied Machine Learning at the University of Maryland. I work where rigorous research meets production: computer vision, deep learning, transformers, scalable pipelines, and GPU-aware optimization. Across roles at Ayar Labs, IIT Indore, and NIT Jaipur, I’ve focused on turning ambiguous visual problems into systems people can actually use.
       </motion.p>
 
-      <div className='mt-20 flex flex-wrap gap-10'>
+      <div className='mt-16 grid lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-5'>
         {services.map((service, index) => (
           <ServiceCard key={service.title} index={index} {...service} />
         ))}

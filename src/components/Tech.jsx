@@ -1,33 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { BallCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { technologies } from "../constants";
 
 const Tech = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
-    setIsMobile(mediaQuery.matches);
-
-    const handleResize = (e) => setIsMobile(e.matches);
-    mediaQuery.addEventListener("change", handleResize);
-    return () => mediaQuery.removeEventListener("change", handleResize);
-  }, []);
-
   return (
-    <div className='flex flex-row flex-wrap justify-center gap-10'>
+    <div className='tech-grid flex flex-row flex-wrap justify-center gap-5'>
       {technologies.map((technology) => (
-        <div className='w-28 h-28' key={technology.name}>
-          {isMobile ? (
-            <img
-              src={technology.icon}
-              alt={technology.name}
-              className='w-full h-full object-contain'
-            />
-          ) : (
-            <BallCanvas icon={technology.icon} />
-          )}
+        <div className='tech-item w-28 h-32 flex flex-col items-center justify-center gap-2' key={technology.name}>
+          <img
+            src={technology.icon}
+            alt={technology.name}
+            className='w-full h-full object-contain'
+          />
+          <span className='text-secondary text-[12px] text-center'>{technology.name}</span>
         </div>
       ))}
     </div>
