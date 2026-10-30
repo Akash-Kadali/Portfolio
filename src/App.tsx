@@ -613,6 +613,9 @@ const scenes = [
 function SpatialDeck() {
   const track = useRef<HTMLDivElement>(null);
   const locked = useRef(false);
+  const activeSceneRef = useRef(0);
+  const wheelUnlock = useRef<number | null>(null);
+  const lockStartedAt = useRef(0);
   const [activeScene, setActiveScene] = useState(0);
   const go = (index: number) => {
     track.current?.scrollTo({
@@ -632,6 +635,7 @@ function SpatialDeck() {
         0,
         Math.min(scenes.length - 1, Math.round(node.scrollLeft / innerWidth)),
       );
+      activeSceneRef.current = index;
       setActiveScene(index);
       let sectionId = scenes[index][0];
       if (
@@ -645,9 +649,25 @@ function SpatialDeck() {
         new CustomEvent("deckchange", { detail: sectionId }),
       );
     };
+    const scheduleWheelUnlock = () => {
+      if (wheelUnlock.current) window.clearTimeout(wheelUnlock.current);
+      const elapsed = performance.now() - lockStartedAt.current;
+      wheelUnlock.current = window.setTimeout(
+        () => {
+          locked.current = false;
+          wheelUnlock.current = null;
+        },
+        Math.max(240, 820 - elapsed),
+      );
+    };
     const wheel = (event: WheelEvent) => {
       if (!desktop.matches || Math.abs(event.deltaY) < Math.abs(event.deltaX))
         return;
+      if (locked.current) {
+        event.preventDefault();
+        scheduleWheelUnlock();
+        return;
+      }
       const panel = (event.target as HTMLElement).closest(
         ".deck-scene",
       ) as HTMLElement | null;
@@ -659,18 +679,18 @@ function SpatialDeck() {
           (event.deltaY < 0 && panel.scrollTop > 3));
       if (canMoveInside) return;
       event.preventDefault();
-      if (locked.current) return;
       locked.current = true;
+      lockStartedAt.current = performance.now();
       go(
         Math.max(
           0,
           Math.min(
             scenes.length - 1,
-            activeScene + (event.deltaY > 0 ? 1 : -1),
+            activeSceneRef.current + (event.deltaY > 0 ? 1 : -1),
           ),
         ),
       );
-      window.setTimeout(() => (locked.current = false), 650);
+      scheduleWheelUnlock();
     };
     const keyboard = (event: KeyboardEvent) => {
       if (
@@ -680,11 +700,11 @@ function SpatialDeck() {
         return;
       if (event.key === "ArrowRight" || event.key === "PageDown") {
         event.preventDefault();
-        go(Math.min(scenes.length - 1, activeScene + 1));
+        go(Math.min(scenes.length - 1, activeSceneRef.current + 1));
       }
       if (event.key === "ArrowLeft" || event.key === "PageUp") {
         event.preventDefault();
-        go(Math.max(0, activeScene - 1));
+        go(Math.max(0, activeSceneRef.current - 1));
       }
     };
     const navigate = (id: string) => {
@@ -720,7 +740,7 @@ function SpatialDeck() {
         };
         alignTarget();
       }
-      if (sceneIndex !== activeScene) {
+      if (sceneIndex !== activeSceneRef.current) {
         window.setTimeout(() => {
           const delayedTarget = document.getElementById(id);
           if (!delayedTarget) return;
@@ -766,8 +786,10 @@ function SpatialDeck() {
       window.removeEventListener("keydown", keyboard);
       document.removeEventListener("click", internalLinks);
       window.removeEventListener("decknavigate", requestedNavigation);
+      if (wheelUnlock.current) window.clearTimeout(wheelUnlock.current);
+      locked.current = false;
     };
-  }, [activeScene]);
+  }, []);
   return (
     <main className="spatial-deck">
       <div className="deck-track" ref={track}>
