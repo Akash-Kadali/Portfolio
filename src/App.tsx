@@ -615,15 +615,46 @@ function SpatialDeck() {
   const locked = useRef(false);
   const activeSceneRef = useRef(0);
   const wheelUnlock = useRef<number | null>(null);
+  const wheelIntentReset = useRef<number | null>(null);
+  const wheelIntent = useRef(0);
   const lockStartedAt = useRef(0);
+  const transitionFrame = useRef<number | null>(null);
   const [activeScene, setActiveScene] = useState(0);
   const go = (index: number) => {
-    track.current?.scrollTo({
-      left: index * track.current.clientWidth,
-      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-    });
+    const node = track.current;
+    if (!node) return;
+    const destination = index * node.clientWidth;
+    if (transitionFrame.current)
+      window.cancelAnimationFrame(transitionFrame.current);
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      node.scrollLeft = destination;
+      return;
+    }
+    const origin = node.scrollLeft;
+    const distance = destination - origin;
+    if (Math.abs(distance) < 1) return;
+    const started = performance.now();
+    const duration = Math.min(
+      1180,
+      940 + (Math.abs(distance) / node.clientWidth - 1) * 70,
+    );
+    node.classList.add("is-transitioning");
+    const animate = (now: number) => {
+      const progress = Math.min(1, (now - started) / duration);
+      const eased =
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      node.scrollLeft = origin + distance * eased;
+      if (progress < 1)
+        transitionFrame.current = requestAnimationFrame(animate);
+      else {
+        node.scrollLeft = destination;
+        node.classList.remove("is-transitioning");
+        transitionFrame.current = null;
+      }
+    };
+    transitionFrame.current = requestAnimationFrame(animate);
   };
   useEffect(() => {
     const node = track.current;
@@ -633,7 +664,10 @@ function SpatialDeck() {
       if (!desktop.matches) return;
       const index = Math.max(
         0,
-        Math.min(scenes.length - 1, Math.round(node.scrollLeft / innerWidth)),
+        Math.min(
+          scenes.length - 1,
+          Math.round(node.scrollLeft / node.clientWidth),
+        ),
       );
       activeSceneRef.current = index;
       setActiveScene(index);
@@ -657,7 +691,7 @@ function SpatialDeck() {
           locked.current = false;
           wheelUnlock.current = null;
         },
-        Math.max(240, 820 - elapsed),
+        Math.max(260, 1080 - elapsed),
       );
     };
     const wheel = (event: WheelEvent) => {
@@ -665,6 +699,7 @@ function SpatialDeck() {
         return;
       if (locked.current) {
         event.preventDefault();
+        wheelIntent.current = 0;
         scheduleWheelUnlock();
         return;
       }
@@ -679,15 +714,22 @@ function SpatialDeck() {
           (event.deltaY < 0 && panel.scrollTop > 3));
       if (canMoveInside) return;
       event.preventDefault();
+      wheelIntent.current += event.deltaY;
+      if (wheelIntentReset.current)
+        window.clearTimeout(wheelIntentReset.current);
+      wheelIntentReset.current = window.setTimeout(() => {
+        wheelIntent.current = 0;
+        wheelIntentReset.current = null;
+      }, 140);
+      if (Math.abs(wheelIntent.current) < 72) return;
+      const direction = wheelIntent.current > 0 ? 1 : -1;
+      wheelIntent.current = 0;
       locked.current = true;
       lockStartedAt.current = performance.now();
       go(
         Math.max(
           0,
-          Math.min(
-            scenes.length - 1,
-            activeSceneRef.current + (event.deltaY > 0 ? 1 : -1),
-          ),
+          Math.min(scenes.length - 1, activeSceneRef.current + direction),
         ),
       );
       scheduleWheelUnlock();
@@ -787,6 +829,11 @@ function SpatialDeck() {
       document.removeEventListener("click", internalLinks);
       window.removeEventListener("decknavigate", requestedNavigation);
       if (wheelUnlock.current) window.clearTimeout(wheelUnlock.current);
+      if (wheelIntentReset.current)
+        window.clearTimeout(wheelIntentReset.current);
+      if (transitionFrame.current)
+        window.cancelAnimationFrame(transitionFrame.current);
+      node.classList.remove("is-transitioning");
       locked.current = false;
     };
   }, []);
