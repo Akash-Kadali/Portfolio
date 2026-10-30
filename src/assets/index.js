@@ -36,7 +36,7 @@ import graphsage from "./graphsage.png";
 import hatespeech from "./hatespeech.png";
 import conversationalai from "./conversationalai.png";
 import nlp from "./nlp.png";
-import cadnet from "./cadnet.jpg";
+import cadnet from "./cadnet.webp";
 import diagnosys from "./diagnosys.png";
 import imgcap from "./imgcap.png";
 import imagesegmentation from "./imagesegmentation.png";

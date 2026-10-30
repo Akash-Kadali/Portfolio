@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowDownRight,
@@ -14,9 +14,13 @@ import { educations, experiences, projects, technologies } from "./constants";
 import InterfaceLayer from "./components/InterfaceLayer";
 import SystemPulse from "./components/SystemPulse";
 import CollaborationConsole from "./components/CollaborationConsole";
+import CommandCenter from "./components/CommandCenter";
+import PerformanceTelemetry from "./components/PerformanceTelemetry";
+import IntelligenceConsole from "./components/IntelligenceConsole";
 
 const Workbench = lazy(() => import("./components/Workbench"));
 const nav = [
+  ["Intelligence", "intelligence"],
   ["Profile", "profile"],
   ["Trajectory", "trajectory"],
   ["Work", "projects"],
@@ -45,7 +49,13 @@ function Header() {
   useEffect(() => {
     syncActive();
     window.addEventListener("scroll", syncActive, { passive: true });
-    return () => window.removeEventListener("scroll", syncActive);
+    const onDeck = (event: Event) =>
+      setActive((event as CustomEvent<string>).detail);
+    window.addEventListener("deckchange", onDeck);
+    return () => {
+      window.removeEventListener("scroll", syncActive);
+      window.removeEventListener("deckchange", onDeck);
+    };
   }, []);
   useEffect(() => {
     document.body.classList.toggle("menu-open", open);
@@ -448,7 +458,7 @@ function ProjectArchive() {
               aria-label={`Open ${project.name} project on GitHub in a new tab`}
               href={project.website_link}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="archive-row"
               key={project.name}
               initial={{ opacity: 0, y: 10 }}
@@ -520,13 +530,17 @@ function ResearchTransmission() {
           histopathology imagery.
         </p>
         <div className="research-actions">
-          <a href="https://lnkd.in/dZ7Ptmpa" target="_blank" rel="noreferrer">
+          <a
+            href="https://lnkd.in/dZ7Ptmpa"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Read publication <ArrowUpRight size={14} />
           </a>
           <a
             href="https://github.com/Akash-Kadali/CaDT-Net-A-Cascaded-Deformable-Transformer-Network"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
           >
             Inspect code <ArrowUpRight size={14} />
           </a>
@@ -572,7 +586,7 @@ function Contact() {
           className="neo-button primary"
           href="https://github.com/Akash-Kadali"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
         >
           <Github size={17} /> Start on GitHub
         </a>
@@ -586,29 +600,241 @@ function Contact() {
   );
 }
 
+const scenes = [
+  ["top", "Origin"],
+  ["intelligence", "Intelligence"],
+  ["profile", "Identity"],
+  ["trajectory", "Trajectory"],
+  ["projects", "Systems"],
+  ["research", "Research + Lab"],
+  ["contact", "Connect"],
+];
+
+function SpatialDeck() {
+  const track = useRef<HTMLDivElement>(null);
+  const locked = useRef(false);
+  const [activeScene, setActiveScene] = useState(0);
+  const go = (index: number) => {
+    track.current?.scrollTo({
+      left: index * track.current.clientWidth,
+      behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  };
+  useEffect(() => {
+    const node = track.current;
+    if (!node) return;
+    const desktop = matchMedia("(min-width: 1101px)");
+    const sync = () => {
+      if (!desktop.matches) return;
+      const index = Math.max(
+        0,
+        Math.min(scenes.length - 1, Math.round(node.scrollLeft / innerWidth)),
+      );
+      setActiveScene(index);
+      let sectionId = scenes[index][0];
+      if (
+        index === 5 &&
+        (document.getElementById("lab")?.getBoundingClientRect().top ??
+          innerHeight) <
+          innerHeight * 0.58
+      )
+        sectionId = "lab";
+      window.dispatchEvent(
+        new CustomEvent("deckchange", { detail: sectionId }),
+      );
+    };
+    const wheel = (event: WheelEvent) => {
+      if (!desktop.matches || Math.abs(event.deltaY) < Math.abs(event.deltaX))
+        return;
+      const panel = (event.target as HTMLElement).closest(
+        ".deck-scene",
+      ) as HTMLElement | null;
+      if (!panel) return;
+      const maxY = panel.scrollHeight - panel.clientHeight;
+      const canMoveInside =
+        maxY > 4 &&
+        ((event.deltaY > 0 && panel.scrollTop < maxY - 3) ||
+          (event.deltaY < 0 && panel.scrollTop > 3));
+      if (canMoveInside) return;
+      event.preventDefault();
+      if (locked.current) return;
+      locked.current = true;
+      go(
+        Math.max(
+          0,
+          Math.min(
+            scenes.length - 1,
+            activeScene + (event.deltaY > 0 ? 1 : -1),
+          ),
+        ),
+      );
+      window.setTimeout(() => (locked.current = false), 650);
+    };
+    const keyboard = (event: KeyboardEvent) => {
+      if (
+        !desktop.matches ||
+        /INPUT|TEXTAREA|SELECT/.test((event.target as HTMLElement).tagName)
+      )
+        return;
+      if (event.key === "ArrowRight" || event.key === "PageDown") {
+        event.preventDefault();
+        go(Math.min(scenes.length - 1, activeScene + 1));
+      }
+      if (event.key === "ArrowLeft" || event.key === "PageUp") {
+        event.preventDefault();
+        go(Math.max(0, activeScene - 1));
+      }
+    };
+    const navigate = (id: string) => {
+      if (!desktop.matches) return;
+      const sceneBySection: Record<string, number> = {
+        top: 0,
+        intelligence: 1,
+        profile: 2,
+        trajectory: 3,
+        projects: 4,
+        research: 5,
+        lab: 5,
+        contact: 6,
+      };
+      const sceneIndex = sceneBySection[id];
+      if (sceneIndex === undefined) return;
+      go(sceneIndex);
+      const panel = node.children[sceneIndex] as HTMLElement;
+      const target = document.getElementById(id);
+      if (target) {
+        const alignTarget = () => {
+          const targetTop =
+            target.getBoundingClientRect().top -
+            panel.getBoundingClientRect().top +
+            panel.scrollTop -
+            76;
+          panel.scrollTo({
+            top: Math.max(0, targetTop),
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+          });
+        };
+        alignTarget();
+      }
+      if (sceneIndex !== activeScene) {
+        window.setTimeout(() => {
+          const delayedTarget = document.getElementById(id);
+          if (!delayedTarget) return;
+          const delayedTop =
+            delayedTarget.getBoundingClientRect().top -
+            panel.getBoundingClientRect().top +
+            panel.scrollTop -
+            76;
+          panel.scrollTo({
+            top: Math.max(0, delayedTop),
+            behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "auto"
+              : "smooth",
+          });
+        }, 820);
+      }
+    };
+    const internalLinks = (event: MouseEvent) => {
+      if (!desktop.matches) return;
+      const anchor = (event.target as HTMLElement).closest(
+        'a[href^="#"]',
+      ) as HTMLAnchorElement | null;
+      if (!anchor) return;
+      event.preventDefault();
+      navigate(anchor.hash.slice(1));
+    };
+    const requestedNavigation = (event: Event) =>
+      navigate((event as CustomEvent<string>).detail);
+    node.addEventListener("scroll", sync, { passive: true });
+    node.addEventListener("wheel", wheel, { passive: false });
+    const panels = Array.from(node.querySelectorAll(".deck-scene"));
+    panels.forEach((panel) =>
+      panel.addEventListener("scroll", sync, { passive: true }),
+    );
+    window.addEventListener("keydown", keyboard);
+    document.addEventListener("click", internalLinks);
+    window.addEventListener("decknavigate", requestedNavigation);
+    sync();
+    return () => {
+      node.removeEventListener("scroll", sync);
+      node.removeEventListener("wheel", wheel);
+      panels.forEach((panel) => panel.removeEventListener("scroll", sync));
+      window.removeEventListener("keydown", keyboard);
+      document.removeEventListener("click", internalLinks);
+      window.removeEventListener("decknavigate", requestedNavigation);
+    };
+  }, [activeScene]);
+  return (
+    <main className="spatial-deck">
+      <div className="deck-track" ref={track}>
+        <div className="deck-scene scene-origin">
+          <Hero />
+          <SystemPulse />
+        </div>
+        <div className="deck-scene scene-intelligence">
+          <IntelligenceConsole />
+        </div>
+        <div className="deck-scene scene-profile">
+          <Profile />
+        </div>
+        <div className="deck-scene scene-trajectory">
+          <Trajectory />
+          <Toolchain />
+        </div>
+        <div className="deck-scene scene-projects">
+          <ProjectArchive />
+        </div>
+        <div className="deck-scene scene-research">
+          <ResearchTransmission />
+          <Suspense
+            fallback={
+              <div className="lab-loading">CALIBRATING LAB INTERFACE…</div>
+            }
+          >
+            <Workbench />
+          </Suspense>
+        </div>
+        <div className="deck-scene scene-contact">
+          <CollaborationConsole />
+          <Contact />
+        </div>
+      </div>
+      <nav className="deck-navigator" aria-label="Scene navigation">
+        <span>
+          {String(activeScene + 1).padStart(2, "0")} /{" "}
+          {String(scenes.length).padStart(2, "0")}
+        </span>
+        <div>
+          {scenes.map(([id, label], index) => (
+            <button
+              key={id}
+              className={activeScene === index ? "active" : ""}
+              onClick={() => go(index)}
+              aria-label={`Open ${label} scene`}
+            >
+              <i />
+              {label}
+            </button>
+          ))}
+        </div>
+        <small>← → / SCROLL</small>
+      </nav>
+    </main>
+  );
+}
+
 export default function App() {
   return (
     <div className="neo-site">
       <InterfaceLayer />
+      <PerformanceTelemetry />
       <Header />
-      <main>
-        <Hero />
-        <SystemPulse />
-        <Profile />
-        <Trajectory />
-        <Toolchain />
-        <ProjectArchive />
-        <ResearchTransmission />
-        <Suspense
-          fallback={
-            <div className="lab-loading">CALIBRATING LAB INTERFACE…</div>
-          }
-        >
-          <Workbench />
-        </Suspense>
-        <CollaborationConsole />
-        <Contact />
-      </main>
+      <CommandCenter />
+      <SpatialDeck />
     </div>
   );
 }

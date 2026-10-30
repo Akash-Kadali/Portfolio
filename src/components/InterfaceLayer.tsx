@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 const sections = [
   "top",
+  "intelligence",
   "profile",
   "trajectory",
   "projects",
@@ -41,6 +42,19 @@ export default function InterfaceLayer() {
       removeEventListener("scroll", update);
       clearInterval(timer);
     };
+  }, []);
+
+  useEffect(() => {
+    const onDeck = (event: Event) => {
+      const id = (event as CustomEvent<string>).detail;
+      const index = sections.indexOf(id);
+      if (index >= 0) {
+        setActive(id);
+        setProgress((index / Math.max(1, sections.length - 1)) * 100);
+      }
+    };
+    window.addEventListener("deckchange", onDeck);
+    return () => window.removeEventListener("deckchange", onDeck);
   }, []);
 
   useEffect(() => {

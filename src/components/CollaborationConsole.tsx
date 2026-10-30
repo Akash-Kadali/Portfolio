@@ -44,7 +44,7 @@ export default function CollaborationConsole() {
         <a
           href="https://github.com/Akash-Kadali"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
         >
           Prefer source code? Open GitHub <ArrowUpRight size={14} />
         </a>
