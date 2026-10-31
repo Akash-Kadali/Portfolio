@@ -813,29 +813,37 @@ function SpatialDeck() {
   }, []);
   return (
     <main className="spatial-deck">
-      <div
-        className="deck-track"
-        ref={track}
-        style={{ transform: `translate3d(-${activeScene * 100}%, 0, 0)` }}
-      >
-        <div className="deck-scene scene-origin">
+      <div className="deck-track" ref={track}>
+        <div
+          className={`deck-scene scene-origin ${activeScene === 0 ? "is-active" : ""}`}
+        >
           <Hero />
           <SystemPulse />
         </div>
-        <div className="deck-scene scene-intelligence">
+        <div
+          className={`deck-scene scene-intelligence ${activeScene === 1 ? "is-active" : ""}`}
+        >
           <IntelligenceConsole />
         </div>
-        <div className="deck-scene scene-profile">
+        <div
+          className={`deck-scene scene-profile ${activeScene === 2 ? "is-active" : ""}`}
+        >
           <Profile />
         </div>
-        <div className="deck-scene scene-trajectory">
+        <div
+          className={`deck-scene scene-trajectory ${activeScene === 3 ? "is-active" : ""}`}
+        >
           <Trajectory />
           <Toolchain />
         </div>
-        <div className="deck-scene scene-projects">
+        <div
+          className={`deck-scene scene-projects ${activeScene === 4 ? "is-active" : ""}`}
+        >
           <ProjectArchive />
         </div>
-        <div className="deck-scene scene-research">
+        <div
+          className={`deck-scene scene-research ${activeScene === 5 ? "is-active" : ""}`}
+        >
           <ResearchTransmission />
           <Suspense
             fallback={
@@ -845,7 +853,9 @@ function SpatialDeck() {
             <Workbench />
           </Suspense>
         </div>
-        <div className="deck-scene scene-contact">
+        <div
+          className={`deck-scene scene-contact ${activeScene === 6 ? "is-active" : ""}`}
+        >
           <CollaborationConsole />
           <Contact />
         </div>
