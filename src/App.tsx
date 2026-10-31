@@ -619,13 +619,16 @@ function SpatialDeck() {
   const wheelIntent = useRef(0);
   const lockStartedAt = useRef(0);
   const transitionFrame = useRef<number | null>(null);
+  const queuedScene = useRef<number | null>(null);
   const [activeScene, setActiveScene] = useState(0);
   const go = (index: number) => {
     const node = track.current;
     if (!node) return;
     const destination = index * node.clientWidth;
-    if (transitionFrame.current)
-      window.cancelAnimationFrame(transitionFrame.current);
+    if (transitionFrame.current) {
+      queuedScene.current = index;
+      return;
+    }
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
       node.scrollLeft = destination;
       return;
@@ -652,6 +655,10 @@ function SpatialDeck() {
         node.scrollLeft = destination;
         node.classList.remove("is-transitioning");
         transitionFrame.current = null;
+        const nextScene = queuedScene.current;
+        queuedScene.current = null;
+        if (nextScene !== null && nextScene !== index)
+          requestAnimationFrame(() => go(nextScene));
       }
     };
     transitionFrame.current = requestAnimationFrame(animate);
@@ -839,6 +846,7 @@ function SpatialDeck() {
         window.clearTimeout(wheelIntentReset.current);
       if (transitionFrame.current)
         window.cancelAnimationFrame(transitionFrame.current);
+      queuedScene.current = null;
       node.classList.remove("is-transitioning");
       locked.current = false;
     };
