@@ -1072,7 +1072,12 @@ select {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.9;
+  opacity: 0.55;
+  background-image:
+    radial-gradient(circle at 18% 28%, rgba(143, 248, 231, 0.12) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 18%, rgba(97, 166, 255, 0.1) 0 1px, transparent 2px),
+    radial-gradient(circle at 54% 72%, rgba(255, 63, 209, 0.08) 0 1px, transparent 2px);
+  background-size: 92px 92px, 137px 137px, 181px 181px;
 }
 .neo-site main,
 .neo-header {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const sections = [
   "top",
@@ -12,7 +12,6 @@ const sections = [
 ];
 
 export default function InterfaceLayer() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [progress, setProgress] = useState(0);
   const [active, setActive] = useState("top");
   const [clock, setClock] = useState("00:00:00");
@@ -57,96 +56,9 @@ export default function InterfaceLayer() {
     return () => window.removeEventListener("deckchange", onDeck);
   }, []);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    let frame = 0;
-    let width = 0;
-    let height = 0;
-    let lastPaint = 0;
-    let pointer = { x: -1000, y: -1000 };
-    const count = innerWidth < 700 ? 22 : 42;
-    const nodes = Array.from({ length: count }, (_, index) => ({
-      x: Math.random(),
-      y: Math.random(),
-      vx: (Math.random() - 0.5) * 0.00011,
-      vy: (Math.random() - 0.5) * 0.00011,
-      r: index % 9 === 0 ? 1.8 : 0.8 + Math.random() * 0.8,
-    }));
-    const resize = () => {
-      const ratio = Math.min(devicePixelRatio, 1.5);
-      width = innerWidth;
-      height = innerHeight;
-      canvas.width = width * ratio;
-      canvas.height = height * ratio;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    };
-    const move = (event: PointerEvent) => {
-      pointer = { x: event.clientX, y: event.clientY };
-    };
-    const draw = (now: number) => {
-      frame = requestAnimationFrame(draw);
-      if (
-        document.hidden ||
-        document.querySelector(".deck-track.is-transitioning") ||
-        now - lastPaint < 1000 / 30
-      )
-        return;
-      lastPaint = now;
-      ctx.clearRect(0, 0, width, height);
-      for (const node of nodes) {
-        node.x += node.vx;
-        node.y += node.vy;
-        if (node.x < 0 || node.x > 1) node.vx *= -1;
-        if (node.y < 0 || node.y > 1) node.vy *= -1;
-        const x = node.x * width,
-          y = node.y * height;
-        const pd = Math.hypot(x - pointer.x, y - pointer.y);
-        if (pd < 180) {
-          node.x += (x - pointer.x) * 0.000003;
-          node.y += (y - pointer.y) * 0.000003;
-        }
-        ctx.beginPath();
-        ctx.arc(x, y, node.r, 0, Math.PI * 2);
-        ctx.fillStyle =
-          pd < 180 ? "rgba(143,248,231,.75)" : "rgba(143,248,231,.24)";
-        ctx.fill();
-      }
-      for (let a = 0; a < nodes.length; a++)
-        for (let b = a + 1; b < nodes.length; b++) {
-          const ax = nodes[a].x * width,
-            ay = nodes[a].y * height,
-            bx = nodes[b].x * width,
-            by = nodes[b].y * height;
-          const distance = Math.hypot(ax - bx, ay - by);
-          if (distance < 135) {
-            ctx.beginPath();
-            ctx.moveTo(ax, ay);
-            ctx.lineTo(bx, by);
-            ctx.strokeStyle = `rgba(143,248,231,${(1 - distance / 135) * 0.1})`;
-            ctx.stroke();
-          }
-        }
-    };
-    resize();
-    addEventListener("resize", resize);
-    addEventListener("pointermove", move);
-    frame = requestAnimationFrame(draw);
-    return () => {
-      cancelAnimationFrame(frame);
-      removeEventListener("resize", resize);
-      removeEventListener("pointermove", move);
-    };
-  }, []);
-
   return (
     <>
-      <canvas ref={canvasRef} className="neural-field" aria-hidden="true" />
+      <div className="neural-field" aria-hidden="true" />
       <aside className="system-rail" aria-hidden="true">
         <div className="rail-brand">
           INFERENCE
