@@ -614,73 +614,40 @@ function SpatialDeck() {
   const track = useRef<HTMLDivElement>(null);
   const locked = useRef(false);
   const activeSceneRef = useRef(0);
+  const activeSectionRef = useRef("top");
   const wheelUnlock = useRef<number | null>(null);
   const wheelIntentReset = useRef<number | null>(null);
   const wheelIntent = useRef(0);
   const lockStartedAt = useRef(0);
-  const transitionFrame = useRef<number | null>(null);
-  const queuedScene = useRef<number | null>(null);
+  const transitionTimer = useRef<number | null>(null);
   const [activeScene, setActiveScene] = useState(0);
+  const announceSection = (sectionId: string) => {
+    if (activeSectionRef.current === sectionId) return;
+    activeSectionRef.current = sectionId;
+    window.dispatchEvent(new CustomEvent("deckchange", { detail: sectionId }));
+  };
   const go = (index: number) => {
     const node = track.current;
     if (!node) return;
-    const destination = index * node.clientWidth;
-    if (transitionFrame.current) {
-      queuedScene.current = index;
-      return;
-    }
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      node.scrollLeft = destination;
-      return;
-    }
-    const origin = node.scrollLeft;
-    const distance = destination - origin;
-    if (Math.abs(distance) < 1) return;
-    const started = performance.now();
-    const duration = Math.min(
-      1180,
-      940 + (Math.abs(distance) / node.clientWidth - 1) * 70,
-    );
+    const bounded = Math.max(0, Math.min(scenes.length - 1, index));
+    activeSceneRef.current = bounded;
+    setActiveScene(bounded);
+    announceSection(scenes[bounded][0]);
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     node.classList.add("is-transitioning");
-    const animate = (now: number) => {
-      const progress = Math.min(1, (now - started) / duration);
-      const eased =
-        progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-      node.scrollLeft = origin + distance * eased;
-      if (progress < 1)
-        transitionFrame.current = requestAnimationFrame(animate);
-      else {
-        node.scrollLeft = destination;
-        node.classList.remove("is-transitioning");
-        transitionFrame.current = null;
-        const nextScene = queuedScene.current;
-        queuedScene.current = null;
-        if (nextScene !== null && nextScene !== index)
-          requestAnimationFrame(() => go(nextScene));
-      }
-    };
-    transitionFrame.current = requestAnimationFrame(animate);
+    if (transitionTimer.current) window.clearTimeout(transitionTimer.current);
+    transitionTimer.current = window.setTimeout(() => {
+      node.classList.remove("is-transitioning");
+      transitionTimer.current = null;
+    }, 820);
   };
   useEffect(() => {
     const node = track.current;
     if (!node) return;
     const desktop = matchMedia("(min-width: 1101px)");
-    let lastSectionId = "";
     const sync = () => {
       if (!desktop.matches) return;
-      const index = Math.max(
-        0,
-        Math.min(
-          scenes.length - 1,
-          Math.round(node.scrollLeft / node.clientWidth),
-        ),
-      );
-      if (activeSceneRef.current !== index) {
-        activeSceneRef.current = index;
-        setActiveScene(index);
-      }
+      const index = activeSceneRef.current;
       let sectionId = scenes[index][0];
       if (
         index === 5 &&
@@ -689,12 +656,7 @@ function SpatialDeck() {
           innerHeight * 0.58
       )
         sectionId = "lab";
-      if (sectionId !== lastSectionId) {
-        lastSectionId = sectionId;
-        window.dispatchEvent(
-          new CustomEvent("deckchange", { detail: sectionId }),
-        );
-      }
+      announceSection(sectionId);
     };
     const scheduleWheelUnlock = () => {
       if (wheelUnlock.current) window.clearTimeout(wheelUnlock.current);
@@ -776,7 +738,9 @@ function SpatialDeck() {
       };
       const sceneIndex = sceneBySection[id];
       if (sceneIndex === undefined) return;
+      const changedScene = sceneIndex !== activeSceneRef.current;
       go(sceneIndex);
+      if (id === "lab") announceSection("lab");
       const panel = node.children[sceneIndex] as HTMLElement;
       const target = document.getElementById(id);
       if (target) {
@@ -795,7 +759,7 @@ function SpatialDeck() {
         };
         alignTarget();
       }
-      if (sceneIndex !== activeSceneRef.current) {
+      if (changedScene) {
         window.setTimeout(() => {
           const delayedTarget = document.getElementById(id);
           if (!delayedTarget) return;
@@ -824,7 +788,6 @@ function SpatialDeck() {
     };
     const requestedNavigation = (event: Event) =>
       navigate((event as CustomEvent<string>).detail);
-    node.addEventListener("scroll", sync, { passive: true });
     node.addEventListener("wheel", wheel, { passive: false });
     const panels = Array.from(node.querySelectorAll(".deck-scene"));
     panels.forEach((panel) =>
@@ -835,7 +798,6 @@ function SpatialDeck() {
     window.addEventListener("decknavigate", requestedNavigation);
     sync();
     return () => {
-      node.removeEventListener("scroll", sync);
       node.removeEventListener("wheel", wheel);
       panels.forEach((panel) => panel.removeEventListener("scroll", sync));
       window.removeEventListener("keydown", keyboard);
@@ -844,16 +806,18 @@ function SpatialDeck() {
       if (wheelUnlock.current) window.clearTimeout(wheelUnlock.current);
       if (wheelIntentReset.current)
         window.clearTimeout(wheelIntentReset.current);
-      if (transitionFrame.current)
-        window.cancelAnimationFrame(transitionFrame.current);
-      queuedScene.current = null;
+      if (transitionTimer.current) window.clearTimeout(transitionTimer.current);
       node.classList.remove("is-transitioning");
       locked.current = false;
     };
   }, []);
   return (
     <main className="spatial-deck">
-      <div className="deck-track" ref={track}>
+      <div
+        className="deck-track"
+        ref={track}
+        style={{ transform: `translate3d(-${activeScene * 100}%, 0, 0)` }}
+      >
         <div className="deck-scene scene-origin">
           <Hero />
           <SystemPulse />

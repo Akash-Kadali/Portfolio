@@ -1285,6 +1285,11 @@ select {
     margin-right: 0;
   }
 }
+@media (min-width: 1101px) and (prefers-reduced-motion: reduce) {
+  .deck-track {
+    transition: none;
+  }
+}
 @media (max-width: 560px) {
   .model-stack {
     display: grid;
@@ -3572,6 +3577,8 @@ input:focus-visible {
     scroll-behavior: auto;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
+    transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
   }
   .deck-track::-webkit-scrollbar {
     display: none;
