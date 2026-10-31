@@ -660,6 +660,7 @@ function SpatialDeck() {
     const node = track.current;
     if (!node) return;
     const desktop = matchMedia("(min-width: 1101px)");
+    let lastSectionId = "";
     const sync = () => {
       if (!desktop.matches) return;
       const index = Math.max(
@@ -669,8 +670,10 @@ function SpatialDeck() {
           Math.round(node.scrollLeft / node.clientWidth),
         ),
       );
-      activeSceneRef.current = index;
-      setActiveScene(index);
+      if (activeSceneRef.current !== index) {
+        activeSceneRef.current = index;
+        setActiveScene(index);
+      }
       let sectionId = scenes[index][0];
       if (
         index === 5 &&
@@ -679,9 +682,12 @@ function SpatialDeck() {
           innerHeight * 0.58
       )
         sectionId = "lab";
-      window.dispatchEvent(
-        new CustomEvent("deckchange", { detail: sectionId }),
-      );
+      if (sectionId !== lastSectionId) {
+        lastSectionId = sectionId;
+        window.dispatchEvent(
+          new CustomEvent("deckchange", { detail: sectionId }),
+        );
+      }
     };
     const scheduleWheelUnlock = () => {
       if (wheelUnlock.current) window.clearTimeout(wheelUnlock.current);

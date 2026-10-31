@@ -66,8 +66,9 @@ export default function InterfaceLayer() {
     let frame = 0;
     let width = 0;
     let height = 0;
+    let lastPaint = 0;
     let pointer = { x: -1000, y: -1000 };
-    const count = innerWidth < 700 ? 28 : 64;
+    const count = innerWidth < 700 ? 22 : 42;
     const nodes = Array.from({ length: count }, (_, index) => ({
       x: Math.random(),
       y: Math.random(),
@@ -76,7 +77,7 @@ export default function InterfaceLayer() {
       r: index % 9 === 0 ? 1.8 : 0.8 + Math.random() * 0.8,
     }));
     const resize = () => {
-      const ratio = Math.min(devicePixelRatio, 2);
+      const ratio = Math.min(devicePixelRatio, 1.5);
       width = innerWidth;
       height = innerHeight;
       canvas.width = width * ratio;
@@ -88,7 +89,15 @@ export default function InterfaceLayer() {
     const move = (event: PointerEvent) => {
       pointer = { x: event.clientX, y: event.clientY };
     };
-    const draw = () => {
+    const draw = (now: number) => {
+      frame = requestAnimationFrame(draw);
+      if (
+        document.hidden ||
+        document.querySelector(".deck-track.is-transitioning") ||
+        now - lastPaint < 1000 / 30
+      )
+        return;
+      lastPaint = now;
       ctx.clearRect(0, 0, width, height);
       for (const node of nodes) {
         node.x += node.vx;
@@ -123,12 +132,11 @@ export default function InterfaceLayer() {
             ctx.stroke();
           }
         }
-      frame = requestAnimationFrame(draw);
     };
     resize();
     addEventListener("resize", resize);
     addEventListener("pointermove", move);
-    draw();
+    frame = requestAnimationFrame(draw);
     return () => {
       cancelAnimationFrame(frame);
       removeEventListener("resize", resize);
@@ -162,7 +170,7 @@ export default function InterfaceLayer() {
       </aside>
       <div className="corner-diagnostics" aria-hidden="true">
         <span>FPS / AUTO</span>
-        <span>NODE / {innerWidth < 700 ? "028" : "064"}</span>
+        <span>NODE / {innerWidth < 700 ? "022" : "042"}</span>
         <span>STATE / NOMINAL</span>
       </div>
     </>
