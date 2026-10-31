@@ -620,7 +620,6 @@ function SpatialDeck() {
   const wheelIntent = useRef(0);
   const lockStartedAt = useRef(0);
   const transitionTimer = useRef<number | null>(null);
-  const [activeScene, setActiveScene] = useState(0);
   const announceSection = (sectionId: string) => {
     if (activeSectionRef.current === sectionId) return;
     activeSectionRef.current = sectionId;
@@ -631,7 +630,23 @@ function SpatialDeck() {
     if (!node) return;
     const bounded = Math.max(0, Math.min(scenes.length - 1, index));
     activeSceneRef.current = bounded;
-    setActiveScene(bounded);
+    const sceneNodes = Array.from(node.querySelectorAll<HTMLElement>(".deck-scene"));
+    sceneNodes.forEach((scene, sceneIndex) =>
+      scene.classList.toggle("is-active", sceneIndex === bounded),
+    );
+    const navigator = node.parentElement?.querySelector<HTMLElement>(
+      ".deck-navigator",
+    );
+    navigator?.querySelectorAll<HTMLButtonElement>("button").forEach(
+      (button, buttonIndex) => {
+        const selected = buttonIndex === bounded;
+        button.classList.toggle("active", selected);
+        button.setAttribute("aria-current", selected ? "true" : "false");
+      },
+    );
+    const counter = navigator?.querySelector<HTMLElement>("[data-scene-counter]");
+    if (counter)
+      counter.textContent = `${String(bounded + 1).padStart(2, "0")} / ${String(scenes.length).padStart(2, "0")}`;
     announceSection(scenes[bounded][0]);
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     node.classList.add("is-transitioning");
@@ -815,34 +830,34 @@ function SpatialDeck() {
     <main className="spatial-deck">
       <div className="deck-track" ref={track}>
         <div
-          className={`deck-scene scene-origin ${activeScene === 0 ? "is-active" : ""}`}
+          className="deck-scene scene-origin is-active"
         >
           <Hero />
           <SystemPulse />
         </div>
         <div
-          className={`deck-scene scene-intelligence ${activeScene === 1 ? "is-active" : ""}`}
+          className="deck-scene scene-intelligence"
         >
           <IntelligenceConsole />
         </div>
         <div
-          className={`deck-scene scene-profile ${activeScene === 2 ? "is-active" : ""}`}
+          className="deck-scene scene-profile"
         >
           <Profile />
         </div>
         <div
-          className={`deck-scene scene-trajectory ${activeScene === 3 ? "is-active" : ""}`}
+          className="deck-scene scene-trajectory"
         >
           <Trajectory />
           <Toolchain />
         </div>
         <div
-          className={`deck-scene scene-projects ${activeScene === 4 ? "is-active" : ""}`}
+          className="deck-scene scene-projects"
         >
           <ProjectArchive />
         </div>
         <div
-          className={`deck-scene scene-research ${activeScene === 5 ? "is-active" : ""}`}
+          className="deck-scene scene-research"
         >
           <ResearchTransmission />
           <Suspense
@@ -854,24 +869,22 @@ function SpatialDeck() {
           </Suspense>
         </div>
         <div
-          className={`deck-scene scene-contact ${activeScene === 6 ? "is-active" : ""}`}
+          className="deck-scene scene-contact"
         >
           <CollaborationConsole />
           <Contact />
         </div>
       </div>
       <nav className="deck-navigator" aria-label="Scene navigation">
-        <span>
-          {String(activeScene + 1).padStart(2, "0")} /{" "}
-          {String(scenes.length).padStart(2, "0")}
-        </span>
+        <span data-scene-counter>01 / {String(scenes.length).padStart(2, "0")}</span>
         <div>
           {scenes.map(([id, label], index) => (
             <button
               key={id}
-              className={activeScene === index ? "active" : ""}
+              className={index === 0 ? "active" : ""}
               onClick={() => go(index)}
               aria-label={`Open ${label} scene`}
+              aria-current={index === 0 ? "true" : "false"}
             >
               <i />
               {label}
