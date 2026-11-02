@@ -3639,7 +3639,7 @@ input:focus-visible {
   .deck-scene.is-active {
     display: block;
     z-index: 2;
-    animation: scene-reveal 180ms ease-out both;
+    animation: scene-reveal 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
   @keyframes scene-reveal {
     from { opacity: 0; }

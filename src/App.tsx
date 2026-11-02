@@ -639,6 +639,9 @@ function SpatialDeck() {
   const wheelUnlock = useRef<number | null>(null);
   const wheelIntentReset = useRef<number | null>(null);
   const wheelIntent = useRef(0);
+  const boundaryPause = useRef<number | null>(null);
+  const boundaryDirection = useRef(0);
+  const boundaryReady = useRef(false);
   const lockStartedAt = useRef(0);
   const transitionTimer = useRef<number | null>(null);
   const announceSection = (sectionId: string) => {
@@ -675,7 +678,7 @@ function SpatialDeck() {
     transitionTimer.current = window.setTimeout(() => {
       node.classList.remove("is-transitioning");
       transitionTimer.current = null;
-    }, 820);
+    }, 260);
   };
   useEffect(() => {
     const node = track.current;
@@ -702,16 +705,21 @@ function SpatialDeck() {
           locked.current = false;
           wheelUnlock.current = null;
         },
-        Math.max(260, 1080 - elapsed),
+        Math.max(120, 620 - elapsed),
       );
+    };
+    const resetBoundary = () => {
+      wheelIntent.current = 0;
+      boundaryDirection.current = 0;
+      boundaryReady.current = false;
+      if (boundaryPause.current) window.clearTimeout(boundaryPause.current);
+      boundaryPause.current = null;
     };
     const wheel = (event: WheelEvent) => {
       if (!desktop.matches || Math.abs(event.deltaY) < Math.abs(event.deltaX))
         return;
       if (locked.current) {
         event.preventDefault();
-        wheelIntent.current = 0;
-        scheduleWheelUnlock();
         return;
       }
       const panel = (event.target as HTMLElement).closest(
@@ -723,18 +731,39 @@ function SpatialDeck() {
         maxY > 4 &&
         ((event.deltaY > 0 && panel.scrollTop < maxY - 3) ||
           (event.deltaY < 0 && panel.scrollTop > 3));
-      if (canMoveInside) return;
+      if (canMoveInside) {
+        resetBoundary();
+        return;
+      }
       event.preventDefault();
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const nextScene = activeSceneRef.current + direction;
+      if (nextScene < 0 || nextScene >= scenes.length) {
+        resetBoundary();
+        return;
+      }
+      if (boundaryDirection.current !== direction) {
+        resetBoundary();
+        boundaryDirection.current = direction;
+      }
+      if (!boundaryReady.current) {
+        if (boundaryPause.current) window.clearTimeout(boundaryPause.current);
+        boundaryPause.current = window.setTimeout(() => {
+          boundaryReady.current = true;
+          boundaryPause.current = null;
+          wheelIntent.current = 0;
+        }, 240);
+        return;
+      }
       wheelIntent.current += event.deltaY;
       if (wheelIntentReset.current)
         window.clearTimeout(wheelIntentReset.current);
       wheelIntentReset.current = window.setTimeout(() => {
         wheelIntent.current = 0;
         wheelIntentReset.current = null;
-      }, 140);
-      if (Math.abs(wheelIntent.current) < 72) return;
-      const direction = wheelIntent.current > 0 ? 1 : -1;
-      wheelIntent.current = 0;
+      }, 180);
+      if (Math.abs(wheelIntent.current) < 110) return;
+      resetBoundary();
       locked.current = true;
       lockStartedAt.current = performance.now();
       go(
@@ -810,7 +839,7 @@ function SpatialDeck() {
               ? "auto"
               : "smooth",
           });
-        }, 820);
+        }, 260);
       }
     };
     const internalLinks = (event: MouseEvent) => {
@@ -842,6 +871,7 @@ function SpatialDeck() {
       if (wheelUnlock.current) window.clearTimeout(wheelUnlock.current);
       if (wheelIntentReset.current)
         window.clearTimeout(wheelIntentReset.current);
+      if (boundaryPause.current) window.clearTimeout(boundaryPause.current);
       if (transitionTimer.current) window.clearTimeout(transitionTimer.current);
       node.classList.remove("is-transitioning");
       locked.current = false;
@@ -906,7 +936,7 @@ function SpatialDeck() {
             </button>
           ))}
         </div>
-        <small>← → / SCROLL</small>
+        <small>EDGE · PAUSE · CONTINUE</small>
       </nav>
     </main>
   );
