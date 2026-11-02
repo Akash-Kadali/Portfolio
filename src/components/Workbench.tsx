@@ -10,16 +10,11 @@ import {
 } from "@tanstack/react-table";
 import * as Tabs from "@radix-ui/react-tabs";
 import { create } from "zustand";
-import { Document, Page, pdfjs } from "react-pdf";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { AnimatePresence, motion } from "motion/react";
 import { ArrowUpDown, Bot, FileText, Gauge, Search, SlidersHorizontal, Upload } from "lucide-react";
 import { Button } from "./ui/Button";
 import { styles } from "../styles";
 import { SectionWrapper } from "../hoc";
 import type { UIMessage } from "ai";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
 type Result = {
   rank: number;
@@ -156,21 +151,27 @@ const Workbench = () => {
             {selectedResult && <div className="result-inspector" aria-live="polite"><span>SELECTED EVIDENCE</span><b>{selectedResult.document}</b><p>{selectedResult.match} · confidence {selectedResult.score.toFixed(2)} · {selectedResult.latency} ms</p></div>}
           </Tabs.Content>
 
-          <Tabs.Content value="evaluation" className="lab-panel h-[360px] p-4 md:p-6">
+          <Tabs.Content value="evaluation" className="lab-panel min-h-[360px] p-4 md:p-6">
             <div className="mb-5"><p className="text-sm font-semibold text-white">Retrieval quality by cutoff</p><p className="mt-1 text-xs text-secondary">Illustrative evaluation data for this interface demo.</p></div>
-            <ResponsiveContainer width="100%" height="80%"><AreaChart data={metrics}><defs><linearGradient id="precision" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#7dd3c7" stopOpacity={0.4}/><stop offset="95%" stopColor="#7dd3c7" stopOpacity={0}/></linearGradient></defs><CartesianGrid stroke="rgba(255,255,255,.06)" vertical={false}/><XAxis dataKey="k" stroke="#788a99"/><YAxis stroke="#788a99" domain={[50, 100]}/><Tooltip contentStyle={{ background: "#0d1926", border: "1px solid rgba(255,255,255,.1)", borderRadius: 12 }}/><Area type="monotone" dataKey="precision" stroke="#7dd3c7" fill="url(#precision)"/><Area type="monotone" dataKey="recall" stroke="#6f8fd6" fill="transparent"/></AreaChart></ResponsiveContainer>
+            <div className="metric-chart" role="img" aria-label="Precision and recall by retrieval cutoff">
+              {metrics.map((metric) => <div className="metric-column" key={metric.k}>
+                <div className="metric-bars"><i style={{ height: `${metric.precision}%` }} title={`Precision ${metric.precision}%`} /><i style={{ height: `${metric.recall}%` }} title={`Recall ${metric.recall}%`} /></div>
+                <b>{metric.k}</b><span>{metric.precision} / {metric.recall}</span>
+              </div>)}
+            </div>
+            <div className="metric-legend"><span><i /> Precision</span><span><i /> Recall</span></div>
           </Tabs.Content>
 
           <Tabs.Content value="documents" className="lab-panel min-h-[360px] p-5">
             <div className="grid gap-5 md:grid-cols-[240px_1fr]">
               <label className="document-drop"><Upload size={22}/><span className="font-semibold text-white">Add a PDF</span><span className="text-xs text-secondary">Preview stays in your browser</span><input type="file" accept="application/pdf" onChange={handlePdf} className="sr-only" /></label>
-              <div className="pdf-stage">{pdfUrl ? <Document file={pdfUrl} loading={<p className="text-secondary">Loading PDF…</p>}><Page pageNumber={1} width={420} renderTextLayer={false} renderAnnotationLayer={false}/></Document> : <div className="text-center"><FileText className="mx-auto mb-3 text-[#7dd3c7]"/><p className="text-sm text-secondary">Select a PDF to inspect page one.</p></div>}</div>
+              <div className="pdf-stage">{pdfUrl ? <object data={pdfUrl} type="application/pdf" aria-label="Selected PDF preview"><a href={pdfUrl} target="_blank" rel="noreferrer">Open the selected PDF</a></object> : <div className="text-center"><FileText className="mx-auto mb-3 text-[#7dd3c7]"/><p className="text-sm text-secondary">Select a PDF to inspect page one.</p></div>}</div>
             </div>
           </Tabs.Content>
 
           <Tabs.Content value="assistant" className="lab-panel min-h-[360px] p-5 md:p-8">
             <div className="mx-auto max-w-2xl">
-              <div className="mb-6 flex items-start gap-3"><div className="assistant-avatar"><Bot size={18}/></div><AnimatePresence mode="wait"><motion.p key={assistantReply.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="assistant-bubble">{assistantReply.text}</motion.p></AnimatePresence></div>
+              <div className="mb-6 flex items-start gap-3"><div className="assistant-avatar"><Bot size={18}/></div><p key={assistantReply.id} className="assistant-bubble">{assistantReply.text}</p></div>
               <div className="assistant-prompts">{["Compare precision and recall", "Which result is fastest?", "Explain the top match"].map(prompt => <button key={prompt} onClick={() => setMessage(prompt)}>{prompt}</button>)}</div>
               <div className="flex flex-col gap-2 sm:flex-row"><input value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => e.key === "Enter" && askAssistant()} placeholder="Ask about these results…" className="form-field h-11 min-w-0 flex-1 rounded-xl px-4 text-sm text-white outline-none"/><Button disabled={assistantBusy} className="w-full sm:w-auto" onClick={askAssistant}>{assistantBusy ? "Reasoning…" : "Ask backend"}</Button></div>
               <p className="mt-3 text-xs text-secondary">Server-grounded response using the active retrieval evaluation dataset.</p>

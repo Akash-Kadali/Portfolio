@@ -19,6 +19,27 @@ import PerformanceTelemetry from "./components/PerformanceTelemetry";
 import IntelligenceConsole from "./components/IntelligenceConsole";
 
 const Workbench = lazy(() => import("./components/Workbench"));
+
+function DeferredWorkbench() {
+  const [enabled, setEnabled] = useState(
+    () => matchMedia("(max-width: 1100px)").matches || location.hash === "#lab",
+  );
+  useEffect(() => {
+    const activate = (event: Event) => {
+      const section = (event as CustomEvent<string>).detail;
+      if (section === "research" || section === "lab") setEnabled(true);
+    };
+    window.addEventListener("deckchange", activate);
+    return () => window.removeEventListener("deckchange", activate);
+  }, []);
+  if (!enabled)
+    return <div className="lab-loading">LAB MODULE LOADS ON REQUEST</div>;
+  return (
+    <Suspense fallback={<div className="lab-loading">CALIBRATING LAB INTERFACE…</div>}>
+      <Workbench />
+    </Suspense>
+  );
+}
 const nav = [
   ["Intelligence", "intelligence"],
   ["Profile", "profile"],
@@ -860,13 +881,7 @@ function SpatialDeck() {
           className="deck-scene scene-research"
         >
           <ResearchTransmission />
-          <Suspense
-            fallback={
-              <div className="lab-loading">CALIBRATING LAB INTERFACE…</div>
-            }
-          >
-            <Workbench />
-          </Suspense>
+          <DeferredWorkbench />
         </div>
         <div
           className="deck-scene scene-contact"
