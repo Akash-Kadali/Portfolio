@@ -1,5 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -12,32 +11,31 @@ import {
 } from "lucide-react";
 import { educations, experiences, projects, technologies } from "./constants";
 import InterfaceLayer from "./components/InterfaceLayer";
-import SystemPulse from "./components/SystemPulse";
 import CollaborationConsole from "./components/CollaborationConsole";
 import CommandCenter from "./components/CommandCenter";
-import PerformanceTelemetry from "./components/PerformanceTelemetry";
 import IntelligenceConsole from "./components/IntelligenceConsole";
 
-const Workbench = lazy(() => import("./components/Workbench"));
-
-function DeferredWorkbench() {
-  const [enabled, setEnabled] = useState(
-    () => matchMedia("(max-width: 1100px)").matches || location.hash === "#lab",
-  );
-  useEffect(() => {
-    const activate = (event: Event) => {
-      const section = (event as CustomEvent<string>).detail;
-      if (section === "research" || section === "lab") setEnabled(true);
-    };
-    window.addEventListener("deckchange", activate);
-    return () => window.removeEventListener("deckchange", activate);
-  }, []);
-  if (!enabled)
-    return <div className="lab-loading">LAB MODULE LOADS ON REQUEST</div>;
+function LightweightLab() {
   return (
-    <Suspense fallback={<div className="lab-loading">CALIBRATING LAB INTERFACE…</div>}>
-      <Workbench />
-    </Suspense>
+    <section className="lightweight-lab" id="lab" aria-labelledby="lab-title">
+      <div>
+        <span>05 / ML PRODUCT LAB</span>
+        <h2 id="lab-title">Working systems, without a heavy browser runtime.</h2>
+        <p>
+          Explore the evidence search and role matcher in the Intelligence scene.
+          Both use the production API while keeping this interface fast and stable.
+        </p>
+      </div>
+      <button
+        onClick={() =>
+          window.dispatchEvent(
+            new CustomEvent("decknavigate", { detail: "intelligence" }),
+          )
+        }
+      >
+        Open intelligence tools <ArrowUpRight size={15} />
+      </button>
+    </section>
   );
 }
 const nav = [
@@ -131,15 +129,11 @@ function Header() {
         >
           {open ? <X /> : <Menu />}
         </button>
-        <AnimatePresence>
           {open && (
-            <motion.nav
+            <nav
               id="mobile-navigation"
               className="neo-mobile-nav"
               aria-label="Mobile navigation"
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
             >
               {nav.map(([label, id], index) => (
                 <a
@@ -157,9 +151,8 @@ function Header() {
                   {active === id && <Check size={14} />}
                 </a>
               ))}
-            </motion.nav>
+            </nav>
           )}
-        </AnimatePresence>
       </header>
       {open && (
         <button
@@ -178,40 +171,23 @@ function Hero() {
       <div className="hero-scanline" />
       <div className="perspective-floor" aria-hidden="true" />
       <div className="hero-copy">
-        <motion.div
-          className="signal-label"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
+        <div className="signal-label">
           <i /> PARSPEC · MACHINE LEARNING ENGINEER · BAY AREA
-        </motion.div>
-        <motion.div
-          className="hero-code"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
+        </div>
+        <div className="hero-code">
           SK / APPLIED AI SYSTEMS / 2026
-        </motion.div>
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
+        </div>
+        <h1>
           <span>INTELLIGENCE</span>
           <br />
           <em>MADE USEFUL</em>
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.65 }}
-        >
+        </h1>
+        <p>
           I’m Sri Akash Kadali, a Machine Learning Engineer at Parspec. I build
           end-to-end AI systems across data pipelines, model development,
           backend services, and scalable production inference.
-        </motion.p>
-        <motion.div className="model-stack">
+        </p>
+        <div className="model-stack">
           <span>
             <i />
             VISION ENCODER
@@ -224,26 +200,18 @@ function Hero() {
             <i />
             CUDA RUNTIME
           </span>
-        </motion.div>
-        <motion.div
-          className="hero-actions"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
+        </div>
+        <div className="hero-actions">
           <a href="#projects" className="neo-button primary">
             Enter selected work <ArrowDownRight size={17} />
           </a>
           <a href="#lab" className="neo-button ghost">
             <Radio size={16} /> Open ML lab
           </a>
-        </motion.div>
+        </div>
       </div>
-      <motion.div
+      <div
         className="orbital-system"
-        initial={{ opacity: 0, scale: 0.82, rotate: -12 }}
-        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-        transition={{ duration: 1.2 }}
         aria-hidden="true"
       >
         <div className="core-aura" />
@@ -286,7 +254,7 @@ function Hero() {
           </div>
           <small>OPTIMAL</small>
         </div>
-      </motion.div>
+      </div>
       <div className="hero-index">
         <span>01</span>
         <b>ML Engineer · Parspec</b>
@@ -475,16 +443,13 @@ function ProjectArchive() {
         {visibleProjects.map((project: any) => {
           const index = projects.indexOf(project);
           return (
-            <motion.a
+            <a
               aria-label={`Open ${project.name} project on GitHub in a new tab`}
               href={project.website_link}
               target="_blank"
               rel="noopener noreferrer"
               className="archive-row"
               key={project.name}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ x: 6 }}
             >
               <span className="archive-number">
                 {String(index + 1).padStart(2, "0")}
@@ -507,7 +472,7 @@ function ProjectArchive() {
                 </span>
               </div>
               <ArrowUpRight className="archive-arrow" />
-            </motion.a>
+            </a>
           );
         })}
       </div>
@@ -884,7 +849,6 @@ function SpatialDeck() {
           className="deck-scene scene-origin is-active"
         >
           <Hero />
-          <SystemPulse />
         </div>
         <div
           className="deck-scene scene-intelligence"
@@ -911,7 +875,7 @@ function SpatialDeck() {
           className="deck-scene scene-research"
         >
           <ResearchTransmission />
-          <DeferredWorkbench />
+          <LightweightLab />
         </div>
         <div
           className="deck-scene scene-contact"
@@ -946,7 +910,6 @@ export default function App() {
   return (
     <div className="neo-site">
       <InterfaceLayer />
-      <PerformanceTelemetry />
       <Header />
       <CommandCenter />
       <SpatialDeck />

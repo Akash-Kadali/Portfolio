@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -121,27 +120,20 @@ export default function CommandCenter() {
         <span>COMMAND</span>
         <kbd>⌘ K</kbd>
       </button>
-      <AnimatePresence>
         {open && (
-          <motion.div
+          <div
             className="command-backdrop"
             role="presentation"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             onMouseDown={(event) =>
               event.target === event.currentTarget && setOpen(false)
             }
           >
-            <motion.section
+            <section
               ref={dialog}
               role="dialog"
               aria-modal="true"
               aria-label="Portfolio command center"
               className="command-center"
-              initial={{ opacity: 0, y: 18, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 12, scale: 0.98 }}
               onKeyDown={containFocus}
             >
               <header>
@@ -237,10 +229,9 @@ export default function CommandCenter() {
                 <span>↵ Select</span>
                 <span>ESC Close</span>
               </footer>
-            </motion.section>
-          </motion.div>
+            </section>
+          </div>
         )}
-      </AnimatePresence>
     </>
   );
 }

@@ -14,7 +14,6 @@ const sections = [
 export default function InterfaceLayer() {
   const [progress, setProgress] = useState(0);
   const [active, setActive] = useState("top");
-  const [clock, setClock] = useState("00:00:00");
 
   useEffect(() => {
     const update = () => {
@@ -33,13 +32,8 @@ export default function InterfaceLayer() {
     };
     update();
     addEventListener("scroll", update, { passive: true });
-    const timer = window.setInterval(
-      () => setClock(new Date().toLocaleTimeString("en-US", { hour12: false })),
-      1000,
-    );
     return () => {
       removeEventListener("scroll", update);
-      clearInterval(timer);
     };
   }, []);
 
@@ -76,8 +70,8 @@ export default function InterfaceLayer() {
           ))}
         </div>
         <div className="rail-clock">
-          <b>{clock}</b>
-          <span>UTC−07</span>
+          <b>SK / ML</b>
+          <span>BAY AREA</span>
         </div>
       </aside>
       <div className="corner-diagnostics" aria-hidden="true">
